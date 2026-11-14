@@ -19,6 +19,16 @@ Recorded from `package.json`, `node_modules/*/package.json`, and `npm view` outp
 | `eslint` | `dependencies` | `^10.15.0` | `10.15.0` | `10.15.0` | Card 0.1 | Active (Card 0.1 approved) |
 | `@eslint/js` | `dependencies` | `^10.0.1` | `10.0.1` | `10.0.1` | Card 0.1 | Active (Card 0.1 approved); peer `eslint: ^10.0.0` |
 | `typescript-eslint` | `dependencies` | `^8.72.2` | `8.72.2` | `8.72.2` | Card 0.1 | Active (Card 0.1 approved); peer `eslint: ^8.57.0 \|\| ^9.0.0 \|\| ^10.0.0`, `typescript: >=4.8.4 <6.1.0` |
+| `@fontsource/newsreader` | `dependencies` | `^5.3.0` | `5.3.0` | `5.3.0` | Card 0.2 | Active (`01 §4`, `03 §4`, OFL-1.1) |
+| `@fontsource/plus-jakarta-sans` | `dependencies` | `^5.3.0` | `5.3.0` | `5.3.0` | Card 0.2 | Active (`01 §4`, `03 §4`, OFL-1.1) |
+| `@fontsource/jetbrains-mono` | `dependencies` | `^5.3.0` | `5.3.0` | `5.3.0` | Card 0.2 | Active (`01 §4`, `03 §4`, OFL-1.1) |
+| `@testing-library/react` | `dependencies` | `^16.3.3` | `16.3.3` | `16.3.3` | Card 0.3a | Active (`01 §4`); peer `@testing-library/dom: ^10.0.0`, `react: ^18.0.0 \|\| ^19.0.0`, `react-dom: ^18.0.0 \|\| ^19.0.0` |
+| `@testing-library/dom` | `dependencies` | `^10.4.2` | `10.4.2` | `10.4.2` | Card 0.3a | Active (`01 §4`) |
+| `@testing-library/user-event` | `dependencies` | `^14.6.10` | `14.6.10` | `14.6.10` | Card 0.3a | Active (`01 §4`); peer `@testing-library/dom: >=7.21.4` |
+| `@testing-library/jest-dom` | `dependencies` | `^7.0.1` | `7.0.1` | `7.0.1` | Card 0.3a | Active (`01 §4`); peer `@testing-library/dom: >=10 <11`, `vitest: >= 0.32` |
+| `jsdom` | `dependencies` | `^31.0.1` | `31.0.1` | `31.0.1` | Card 0.3a | Active (`01 §4`); Vitest DOM environment |
+| `@playwright/test` | `dependencies` | `^1.65.1` | `1.65.1` | `1.65.1` | Card 0.3a | Active (`01 §4`) |
+| `@axe-core/playwright` | `dependencies` | `^4.14.0` | `4.14.0` | `4.14.0` | Card 0.3a | Active (`01 §4`); peer `playwright-core: >= 1.0.0` |
 | `typescript` | `devDependencies` | `~6.0.3` | `6.0.3` | `7.0.2` | scaffold / Card 0.1 | Active (`01 §4`); pinned from `^7.0.2` to `~6.0.3` because `typescript-eslint@8.72.2` requires `peer typescript@">=4.8.4 <6.1.0"` |
 | `tailwindcss` | `devDependencies` | `^4.3.3` | `4.3.5` | `4.3.5` | scaffold | Active (`01 §4`) |
 | `@types/node` | `devDependencies` | `^22.14.0` | `22.20.5` | `26.6.6` | scaffold | Active; matches container Node `v22.23.2` and `vitest@5.1.0` peer `@types/node: ^22.0.0 \|\| >=24.0.0` |
@@ -52,9 +62,5 @@ Recorded from `package.json`, `node_modules/*/package.json`, and `npm view` outp
 | `cron-parser` | `5.10.5` | `5.10.5` | none | No peer constraints |
 | `regexp-tree` | `0.1.27` | `0.1.27` | none | No peer constraints |
 | `gpt-tokenizer` | `4.1.2` | `4.1.2` | none | No peer constraints |
-| `@fontsource/plus-jakarta-sans` | `5.3.0` | `5.3.0` | none | No peer constraints |
-| `@fontsource/jetbrains-mono` | `5.3.0` | `5.3.0` | none | No peer constraints |
 | `comlink` | `4.4.2` | `4.4.2` | none | No peer constraints |
 | `fast-check` | `4.10.2` | `4.10.2` | none | No peer constraints |
-| `@playwright/test` | `1.65.1` | `1.65.1` | none | No peer constraints |
-| `@axe-core/playwright` | `4.14.0` | `4.14.0` | `playwright-core: >= 1.0.0` | Satisfied when `@playwright/test` is installed |

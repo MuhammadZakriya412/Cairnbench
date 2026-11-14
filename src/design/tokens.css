@@ -1,0 +1,90 @@
+:root {
+  /* Fonts (03 §4) */
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Type scale in px (03 §4: 12, 14, 16, 18, 20, 24, 32, 44; section 26–28; hero 40–44) */
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-26: 26px;
+  --text-28: 28px;
+  --text-32: 32px;
+  --text-40: 40px;
+  --text-44: 44px;
+
+  /* Line heights, tracking, and reading measure (03 §4) */
+  --leading-body: 1.5;
+  --leading-hero: 1.08;
+  --tracking-heading: -0.02em;
+  --measure-reading-min: 45ch;
+  --measure-reading-max: 75ch;
+
+  /* Spacing: 4-pixel grid (03 §4: 4, 8, 12, 16, 24, 32, 48, 64) */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --space-64: 64px;
+
+  /* Radius (03 §4: 5 buttons, 6 inputs/container, 8 large product windows, 999 badges) */
+  --radius-5: 5px;
+  --radius-6: 6px;
+  --radius-8: 8px;
+  --radius-999: 999px;
+
+  /* Elevation shadows (03 §4: color comes from --shadow-color in themes.css) */
+  --shadow-sm: 0 1px 2px var(--shadow-color);
+  --shadow-md: 0 6px 20px -6px var(--shadow-color);
+  --shadow-lg: 0 16px 40px -12px var(--shadow-color);
+
+  /* Interactive target minimums and focus ring geometry (03 §4) */
+  --target-desktop: 40px;
+  --target-touch: 44px;
+  --target-gap: 8px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* Density defaults: comfortable (03 §4) */
+  --control-height: 40px;
+  --density-gap-scale: 1;
+
+  /* Motion durations (03 §4: 200–320 ms) */
+  --duration-fast: 200ms;
+  --duration-normal: 260ms;
+  --duration-slow: 320ms;
+  --duration-opacity: 200ms;
+}
+
+[data-density="comfortable"] {
+  --control-height: 40px;
+  --density-gap-scale: 1;
+}
+
+[data-density="compact"] {
+  --control-height: 32px;
+  --density-gap-scale: 0.75;
+}
+
+[data-motion="reduced"] {
+  --duration-fast: 0ms;
+  --duration-normal: 0ms;
+  --duration-slow: 0ms;
+  --duration-opacity: 100ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+    --duration-opacity: 100ms;
+  }
+}

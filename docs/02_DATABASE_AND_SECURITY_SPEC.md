@@ -19,7 +19,7 @@ Gemini writes the SQL and TypeScript. This file defines **what must be true**. T
 ## 2. Tables (columns and rules; Gemini writes DDL)
 
 ### 2.1 `profiles`
-`id` (uuid, PK, references `auth.users` on delete cascade), `handle` (case-insensitive, unique, nullable until chosen, pattern `^[a-z0-9_]{3,30}$`), `display_name`, `avatar_url`, `theme` (`carbon-studio|alabaster-paper|cobalt-slate|warm-atelier`, default `carbon-studio`), `density` (`comfortable|compact`), `motion` (`fluid|reduced`), `default_launch` (`preview|workspace`), `redaction_rules` (jsonb, default `{}`), `created_at`, `updated_at`.
+`id` (uuid, PK, references `auth.users` on delete cascade), `handle` (case-insensitive, unique, nullable until chosen, pattern `^[a-z0-9_]{3,30}$`), `display_name`, `avatar_url`, `theme` (`cairn-dusk|cairn-daylight`, default `cairn-dusk`; null means follow the system setting), `density` (`comfortable|compact`), `motion` (`fluid|reduced`), `default_launch` (`preview|workspace`), `redaction_rules` (jsonb, default `{}`), `created_at`, `updated_at`.
 Trigger `AFTER INSERT ON auth.users` → `SECURITY DEFINER` function creates the matching profile row (take `full_name`/`avatar_url` from `raw_user_meta_data` if present). This is the only write allowed into the auth schema's trigger list.
 
 ### 2.2 `organizations`, `organization_members`, `organization_invites`

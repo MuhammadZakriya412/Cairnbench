@@ -73,9 +73,10 @@ Install only these. Version column = a version that **existed on the npm registr
 | Validation | `zod` | 4.6.7 |
 | Animation | `motion` | 14.14.0 |
 | Icons | `lucide-react` | 1.72.0 |
-| Fonts | `@fontsource/plus-jakarta-sans`, `@fontsource/jetbrains-mono` | 5.3.0 each (OFL license) |
+| Fonts | `@fontsource/newsreader`, `@fontsource/plus-jakarta-sans`, `@fontsource/jetbrains-mono` | 5.3.0 each (OFL-1.1 license; `newsreader` confirmed on npm 2026-11-14) |
 | Worker RPC | `comlink` | 4.4.2 |
 | Unit tests | `vitest` | 5.1.0 |
+| Component tests (approved for Card 0.3a; peers checked on npm 2026-11-14) | `@testing-library/react`, `@testing-library/dom` (required peer, ^10), `@testing-library/user-event`, `@testing-library/jest-dom`, `jsdom` (the DOM environment for vitest) | 16.3.3, 10.4.2, 14.6.10, 7.0.1, 31.0.1 |
 | Property tests | `fast-check` | 4.10.2 |
 | Browser tests | `@playwright/test`, `@axe-core/playwright` | 1.65.1, 4.14.0 |
 
@@ -111,7 +112,7 @@ Not verified at all (check at install, ask if missing): the Tailwind Vite plugin
 **Exactly one file names the apps: `src/apps/registry.ts`.** The top bar, Home, Apps page, command palette, vault filters, MCP Hub and routes all read the registry. No other file may contain an app id string or a hard-coded list of apps (a CI grep in Card 0.5 fails on it).
 
 Every app lives in `src/apps/<id>/` and exports one `manifest`:
-`id` (kebab-case, 3–32 chars, never changed after release), `name`, `tagline` (≤ 12 words), `tags`, `icon` (lucide name), `workspace` (lazy-loaded component, so each app is its own JS chunk), `contentSchema` (Zod schema of what it stores in `vault_items.content`), `schemaVersion` (int), `migrate(oldContent, fromVersion)` (pure, tested), `presets`, `mcpTools` (zero or more tool definitions, see 02 §9), `tutorial` (id or null), `searchText` (what command palette search matches).
+`id` (kebab-case, 3–32 chars, never changed after release), `name`, `tagline` (≤ 12 words), `tags`, `icon` (lucide name), `workspace` (lazy-loaded component, so each app is its own JS chunk), `contentSchema` (Zod schema of what it stores in `vault_items.content`), `schemaVersion` (int), `migrate(oldContent, fromVersion)` (pure, tested), `presets`, `mcpTools` (zero or more tool definitions, see 02 §9), `tutorial` (id or null), `searchText` (what command palette search matches), `description` (≤ 2 sentences, used by `FeatureRow` on Home), `snippet` (exactly 2 short mono lines shown in `FeatureRow`, each ≤ 48 characters).
 
 Rules: an app may import `core/`, `ui/`, `vault/` only. Adding an app must need **no database migration** unless it needs a new table. Saved content always carries `schemaVersion`; reading old content runs `migrate`. The step-by-step card for adding an app is `05_TASK_CARDS.md` Card A.1.
 
@@ -131,8 +132,8 @@ Import rules: `core/` imports nothing from `ui/`, `pages/`, `apps/`, `vault/`. `
 
 | Path | Page | Notes |
 |---|---|---|
-| `/` | Home | Intro, app directory, "What are you working on?" chips |
-| `/apps` | Apps | All apps in one list with search |
+| `/` | Home | Landing page: hero, tutorials, tools, trust, AI connection |
+| `/apps` | Apps | The workbench: paste strip, recent work, numbered tool index |
 | `/app/:appId/overview` | AppPreview | Tutorial player + try-it sandbox + Launch button |
 | `/app/:appId/workspace` | Workspace | The real tool |
 | `/vault` | Vault | Personal / Organization tabs |

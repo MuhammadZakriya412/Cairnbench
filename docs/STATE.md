@@ -10,8 +10,8 @@
 |---|---|---|---|
 | 0.0 | Environment probe (no product code) | `done-PASS` | `docs/ENVIRONMENT.md` |
 | 0.1 | Repo hygiene, scripts, CI, state files | `done-PASS` | `docs/DEPENDENCIES.md`, `.github/workflows/ci.yml`, `src/config/limits.test.ts` |
-| 0.2 | Design tokens, themes, contrast test | `todo` | — |
-| 0.3a | Form components | `todo` | — |
+| 0.2 | Design tokens, themes, contrast test | `done-PASS` | `src/design/tokens.css`, `src/design/themes.css`, `src/design/fonts.ts`, `src/design/theme.ts`, `src/design/contrast.test.ts`, `src/design/theme.test.ts` |
+| 0.3a | Form components | `done-PASS` | `src/ui/copy.ts`, `src/ui/Button/*`, `src/ui/InputField/*`, `src/ui/TextAreaField/*`, `src/ui/SelectField/*`, `src/ui/Switch/*`, `src/ui/Checkbox/*`, `e2e/kit-axe.spec.ts` |
 | 0.3b | Overlay and feedback components | `todo` | — |
 | 0.3c | Layout components | `todo` | — |
 | 0.4 | Application shell and routing | `todo` | — |
@@ -69,6 +69,8 @@
 | 0.1 | Sync the project to GitHub from AI Studio (`card 0.1: configure repo hygiene, scripts, CI, and state files`) | `pending` |
 | 0.1 | Open the repo's Actions tab and confirm the first CI run is green | `pending` |
 | 0.1 | Create a free Cloudflare Pages project from the repo (build command `npm run build`, output `dist`) and paste the `*.pages.dev` URL into `docs/STATE.md` | `pending` |
+| 0.2 | Sync the project to GitHub from AI Studio (`card 0.2: add design tokens, themes, and WCAG contrast tests`) and confirm CI is green | `pending` |
+| 0.3a | Sync the project to GitHub from AI Studio (`card 0.3a: build form components, copy deck, and axe tests`) and confirm CI is green | `pending` |
 
 ## 3. Environment Probe Summary
 

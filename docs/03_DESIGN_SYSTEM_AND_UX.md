@@ -4,7 +4,7 @@ Gemini: this file is the only source for colors, type, spacing, components, scre
 
 ## 1. Design intent (one paragraph)
 
-Cairnbench looks like a precise instrument: calm surfaces, dense but readable information, one accent color per theme, hairline dividers instead of boxes inside boxes. The logo is a stack of balanced stones (cairn), built from simple geometric shapes. No decoration that carries no meaning.
+Cairnbench looks like a well-made notebook for engineers: warm bone-colored paper in Daylight, warm umber-black in Dusk, ink-gray text, **one copper accent** used sparingly, a **serif (Newsreader) for headings and the wordmark**, a sans for interface text, mono for code. Structure comes from hairline rules, whitespace and type size, not from boxes and cards. Motion is slow and eased. The logo is a stack of three balanced stones (a cairn) made from rounded rectangles: the two lower/upper stones in `--accent`, the base in `--border-strong`. Two themes only, `cairn-daylight` and `cairn-dusk`, one identity in two lightings. The public Home page is a real landing page (hero with the product itself, tutorials, tools, trust, AI connection); the `/apps` page is the workbench. No decoration that carries no meaning, **and no invented proof: no customer logos, testimonials, ratings or usage numbers.**
 
 ## 2. Banned (check each screen against this list)
 
@@ -18,41 +18,56 @@ Cairnbench looks like a precise instrument: calm surfaces, dense but readable in
 - A bottom status bar or telemetry strip.
 - Hover as the only way to reach an action or information.
 - Animated width, height, margin or padding.
+- Equal-sized feature cards in a row or grid anywhere (use ruled rows, `ToolRow`, `FeatureRow`). The old hero pattern of headline + search box + chips + 2×2 cards is banned.
+- Teal, cyan or blue accents; gradient or glow behind the hero; stock illustrations; fake product screenshots made of lorem ipsum.
+- Autoplaying video or sound. Any moving content must have a visible pause control.
+- Pure `#000` or `#FFF` page backgrounds, saturated neon colors, and any color not in the token table.
+- Abrupt state changes: every show/hide/move uses `--ease-calm`, except under reduced motion.
 
 ## 3. Tokens (exact values; contrast checked)
 
 All pairs below were computed with the WCAG 2.x formula on 2026-11-14 and pass: text ≥ 4.5:1 on its background and surface; muted text ≥ 4.5:1; accent as text ≥ 4.5:1; on-accent text on accent ≥ 4.5:1; strong border ≥ 3:1 against background and surface; status colors ≥ 4.5:1 on surface and background.
 Gemini must still **add an automated test** (card 0.2) that recomputes these from the CSS variables and fails if any pair drops below its minimum.
 
-Define each as a CSS variable (`--bg`, `--surface`, `--border`, `--border-strong`, `--text`, `--text-muted`, `--accent`, `--on-accent`, `--success`, `--warning`, `--danger`) per theme selector `[data-theme="..."]`.
+Define each as a CSS variable per theme selector `[data-theme="cairn-dusk"]` and `[data-theme="cairn-daylight"]`: `--bg`, `--surface`, `--border`, `--border-strong`, `--text`, `--text-muted`, `--accent`, `--on-accent`, `--accent-wash`, `--success`, `--warning`, `--danger`, `--band-bg`, `--band-text`, `--band-muted`.
 
-| Token | carbon-studio (default dark) | alabaster-paper (light) | cobalt-slate (dark) | warm-atelier (dark) |
-|---|---|---|---|---|
-| `--bg` | `#0B0F17` | `#F6F5F2` | `#090D16` | `#121110` |
-| `--surface` | `#111827` | `#FFFFFF` | `#0F172A` | `#1C1917` |
-| `--border` (decorative) | `#1E293B` | `#E2E0DA` | `#1E293B` | `#292524` |
-| `--border-strong` (inputs, focus separators) | `#64748B` | `#64748B` | `#64748B` | `#78716C` |
-| `--text` | `#F8FAFC` | `#0F172A` | `#F1F5F9` | `#FAFAF9` |
-| `--text-muted` | `#94A3B8` | `#475569` | `#94A3B8` | `#A8A29E` |
-| `--accent` | `#60A5FA` | `#1D4ED8` | `#38BDF8` | `#F59E0B` |
-| `--on-accent` | `#0B0F17` | `#FFFFFF` | `#04121C` | `#121110` |
-| `--success` | `#34D399` | `#047857` | `#34D399` | `#4ADE80` |
-| `--warning` | `#FBBF24` | `#B45309` | `#FBBF24` | `#FCD34D` |
-| `--danger` | `#F87171` | `#B91C1C` | `#F87171` | `#FCA5A5` |
+| Token | cairn-daylight (light) | cairn-dusk (dark, default) |
+|---|---|---|
+| `--bg` | `#EEEBE4` | `#171513` |
+| `--surface` | `#F8F6F1` | `#1F1C19` |
+| `--border` (decorative hairline) | `#D9D4C9` | `#332E29` |
+| `--border-strong` (inputs, focus separators) | `#8A857B` | `#7C7468` |
+| `--text` | `#22262A` | `#EFE9DF` |
+| `--text-muted` | `#5B6065` | `#A39B8F` |
+| `--accent` (copper) | `#A8431F` | `#E08A5E` |
+| `--on-accent` | `#FFFFFF` | `#1A0F08` |
+| `--accent-wash` (highlight behind redacted or matched text) | `#E6D7CC` | `#37281F` |
+| `--success` (moss) | `#44702F` | `#9CC47A` |
+| `--warning` (ochre) | `#8A5A00` | `#E3B85B` |
+| `--danger` (crimson, deliberately not copper) | `#A8213F` | `#F28CA0` |
+| `--band-bg` (inverted band, used by the AI connection section) | `#22262A` | `#2A2622` |
+| `--band-text` | `#EEEBE4` | `#EFE9DF` |
+| `--band-muted` | `#C9C3B6` | `#B5AC9F` |
 
-Why accents differ from the v1 plan: white text on `#3B82F6` is 3.68:1 and on `#D97706` is 3.19:1 — both fail AA, so the brand accents were adjusted.
+Contrast computed with the WCAG 2.x formula on 2026-11-14 (ratio on `--bg` / on `--surface`; minimum in brackets):
+- cairn-daylight: text 12.79 / 14.10; muted 5.34 / 5.88; accent 5.06 / 5.58; success 4.89 / 5.39; warning 4.98 / 5.49; danger 5.97 / 6.58 [all ≥ 4.5]; on-accent on accent 6.02 [≥ 4.5]; border-strong 3.08 / 3.40 [≥ 3]; text on accent-wash 10.85 [≥ 4.5]; band text 12.79 and band muted 8.68 on band-bg [≥ 4.5].
+- cairn-dusk: text 15.08 / 14.04; muted 6.63 / 6.17; accent 6.91 / 6.43; success 9.18 / 8.55; warning 9.78 / 9.10; danger 7.83 / 7.30 [all ≥ 4.5]; on-accent on accent 7.14 [≥ 4.5]; border-strong 3.95 / 3.68 [≥ 3]; text on accent-wash 11.71 [≥ 4.5]; band text 12.43 and band muted 6.70 on band-bg [≥ 4.5]; accent on band-bg 5.70.
+- Rules that follow from the numbers: text on `--accent-wash` is `--text`, never `--accent` (accent on wash is only 4.29:1 in Daylight). `--accent` as text never goes on `--band-bg` in Daylight (2.53:1). `--border` is decorative only (about 1.2–1.4:1 on purpose) and never the only boundary of an input.
+Gemini must still **add an automated test** (card 0.2) that recomputes every pair above from the CSS variables and fails if any drops below its minimum.
 
-Default theme follows `prefers-color-scheme` (dark → carbon-studio, light → alabaster-paper) until the user picks one. Components may only reference tokens, never hex values.
+Color is never the only signal: status colors always come with an icon and text. Copper is the accent, so it is used for: primary buttons, links, active nav underline, focus ring, section numbers and tags. Not for large fills, not for body text.
+
+Default theme follows `prefers-color-scheme` (dark → cairn-dusk, light → cairn-daylight) until the user picks one. Components may only reference tokens, never hex values.
 
 ## 4. Typography, spacing, shape, motion
 
-- Fonts (npm packages, no binary files): **Plus Jakarta Sans** for interface and headings, **JetBrains Mono** for code, logs, numbers. Numbers in tables, timers, token counts use `font-variant-numeric: tabular-nums`. `font-display: swap`.
+- Fonts (npm packages, no binary files): **Newsreader** (serif, weights 400 and 500) for the wordmark, page titles and section headings; **Plus Jakarta Sans** for interface text; **JetBrains Mono** for code, logs, tags, numbers. Hero title 40–44 px Newsreader 400, line-height 1.08, letter-spacing −0.02em; section titles 26–28 px; app screen titles 20–24 px. Numbers in tables, timers, token counts use `font-variant-numeric: tabular-nums`. `font-display: swap`.
 - Scale (px): 12, 14, 16, 18, 20, 24, 32, 44. Body 16, line-height 1.5. Headings letter-spacing −0.02em. Line length 45–75 characters for reading text.
 - Spacing: 4-pixel grid; use 4, 8, 12, 16, 24, 32, 48, 64.
-- Radius: 6 (inputs/buttons), 10 (the single card level), 999 (badges only).
-- Elevation: three shadow tokens `--shadow-sm|md|lg`, used only on popovers, drawers and dialogs. Cards use borders, not shadows.
+- Radius: 5 (buttons), 6 (inputs and the single container level), 8 (large product windows), 999 (badges only). Quiet, slightly squared corners; never pill buttons.
+- Elevation: three shadow tokens, used only on popovers, drawers and dialogs: `--shadow-sm: 0 1px 2px`, `--shadow-md: 0 6px 20px -6px`, `--shadow-lg: 0 16px 40px -12px`, each with color `rgb(0 0 0 / 0.35)` in cairn-dusk and `rgb(20 30 28 / 0.14)` in cairn-daylight. Cards use borders, not shadows.
 - Density: `comfortable` uses the sizes above; `compact` reduces control height from 40 to 32 and vertical gaps by 25%. Controlled by `data-density` on the root.
-- Motion: durations 150–300 ms; animate only `transform` and `opacity`; `motion` library for presence and layout transitions; `prefers-reduced-motion` or the setting "Reduced" removes all transitions except opacity ≤ 100 ms.
+- Motion: durations 200–320 ms with one easing token `--ease-calm: cubic-bezier(0.22, 1, 0.36, 1)`; no bounce, no spring overshoot, no looping animation (the skeleton shimmer is the only exception: ≥ 1.6 s per cycle, off in reduced motion); animate only `transform` and `opacity`; `motion` library for presence and layout transitions; `prefers-reduced-motion` or the setting "Reduced" removes all transitions except opacity ≤ 100 ms.
 - Targets: minimum 40×40 px on desktop, 44×44 px on touch, ≥ 8 px between targets. Visible focus ring: 2 px outline in `--accent`, 2 px offset, on every interactive element; never remove `:focus` without a `:focus-visible` replacement.
 
 ## 5. Component inventory (each lives in `src/ui/<Name>/`)
@@ -69,9 +84,16 @@ Every component must implement five states: **idle, loading** (skeleton shaped l
 | `InfoPopover` | the "(i)" help | `topicId`, `summary` (≤ 2 sentences). Opens on click, Enter, Space or focus; closes on Esc and outside click; `aria-describedby`; contains a link "Open full guide" to `/docs/:topicId` in a new tab. Never hover-only. |
 | `ModalDrawer` | side panel / dialog | built on Radix Dialog; focus trap; Esc closes |
 | `SplitPane` | resizable two-pane layout | built on `react-resizable-panels`; keyboard resizable |
-| `AppCard` | app directory tile | `appId`, `title`, `summary`, `tags`, `savedCount`; two actions: "Watch overview" and "Open app" |
+| `ToolRow` | one line of the numbered tool index on `/apps` | `index`, `appId`, `name`, `tagline`, `savedCount`; whole row is a link; "Open" label at the end |
+| `FeatureRow` | one alternating text + snippet row on Home | `appId`, `name`, `description`, `snippet` (2 mono lines), `reverse`; links "Open tool" and "Watch tutorial" |
+| `SiteHeader`, `SiteFooter` | shell chrome | footer links: Docs, Privacy, GitHub; no newsletter, no social icons |
+| `ProductWindow` | the static hero picture | a real component showing the Context Packer after a pack with two highlighted redactions; built from the same UI kit and sample data as the app, **not an image file** |
+| `PasteStrip` | the paste/drop field on `/apps` | `onPack`; a single bordered row (the only container there) |
+| `TrustStrip` | three plain facts | three columns separated by a 2 px `--accent` top rule; no icons |
+| `McpBand` | the inverted band on Home | uses `--band-*` tokens only |
+| `LiveScrubDemo` (optional, built last) | hero try-it | a textarea with a fake key pre-filled; shows the hidden result live using the real scrubber engine; never sends text anywhere |
 | `Tabs`, `Badge`, `Toast`, `EmptyState`, `ErrorState`, `Skeleton`, `CopyButton`, `Kbd` | utilities | as needed per card |
-| `HyperFramesPlayer` | tutorial player | defined in 05 card 3.2 |
+| `TutorialPlayer` | tutorial player | plays scene data (04 §6) on the real app components; play/pause, scrubber, speed, chapters, captions, transcript; defined in 05 card 3.2 |
 | `DiffView` | side-by-side/unified diff | `before`, `after`, `mode` |
 
 Rules: if a button, input or pattern appears twice, it becomes a component in `src/ui/`. Pages never contain raw `<button>` styling.
@@ -84,11 +106,18 @@ Command palette (⌘K): jump to any page, any app, "New vault item", "Switch the
 
 ## 7. Screens (layout, content, states)
 
-**Home `/`** — Heading "Tools for everyday AI work" (≤ 8 words), one sentence of explanation, input "What are you working on today?" with four chips: "Clean code and hide secrets for AI", "Chain and debug an API request", "Explain a regex, log or cron", "Build a reusable prompt". Choosing a chip highlights the matching app. Below: one AppCard per registered app, in a 2-column grid (1 column on mobile; with an odd count the last card spans both columns) — *not* three equal cards. Chips come from each app's `tagline`/`searchText`, so adding an app adds a chip with no layout change. A short "Start as a guest — no account needed" line and a "Sign in to sync and share" link. Loading: skeleton cards. Empty: not applicable.
+**Home `/` (landing page)** — top to bottom, each section separated by a 1 px `--border` rule and 56–72 px of space:
+1. **Hero:** left: title (copy deck `hero.title`), lead (`hero.lead`), two buttons: primary `hero.cta.primary` → `/apps`, secondary `hero.cta.tour` → scrolls to and starts the first tutorial. Right: `ProductWindow`. Below 900 px the window moves under the text. Optional `LiveScrubDemo` replaces the window's static content only after Card 3.5.
+2. **Tutorials:** section title and sub-line, `TutorialPlayer` (about 60% width) and a ruled list of every registered tutorial (title, length). Selecting an item loads it into the player without leaving the page. Below 900 px the list goes under the player. Nothing autoplays.
+3. **Tools:** section title, then one `FeatureRow` per registered app, alternating left/right; not a grid. Each row's snippet comes from the app manifest.
+4. **Trust:** `TrustStrip` with the three copy-deck facts.
+5. **Connect AI:** `McpBand` with a copyable config example and a link "Set up your AI tool" → `/mcp`. The example uses a placeholder token `cb_YOUR_TOKEN`, never a real one.
+6. **Footer.**
+States: the page is static, so no loading state except the tutorial player's own skeleton. Guests and signed-in users see the same page; a signed-in user's primary button reads `hero.cta.signedin`. No customer logos, testimonials, ratings or statistics.
 
-**Apps `/apps`** — search field, list of all registered apps with tags and "saved items: N". Same actions as AppCard.
+**Apps `/apps` (the workbench)** — a `PasteStrip` ("Pack for AI" sends the pasted text or dropped files into Context Packer and opens it); a section "Pick up where you left off" with up to 5 ruled rows of recent vault items (app tag in mono, title, relative time; empty state: "Nothing here yet. Paste something above, or open a tool below."); a section "Tools" with one `ToolRow` per registered app, numbered, with saved counts from the active store; the guest note `guest.banner` as one line at the bottom. No cards.
 
-**App Preview `/app/:appId/overview`** — left/top: `HyperFramesPlayer` with captions and chapter buttons; right/below: "Try it in 3 steps" sandbox (three preset buttons that fill the tool with sample data and show the result without leaving the page); primary button "Open app"; secondary "Export tutorial file". Page title is the app's plain-English name, not a feature list.
+**App Preview `/app/:appId/overview`** — left/top: `TutorialPlayer` for this app's tutorial with captions and chapter buttons; right/below: "Try it in 3 steps" sandbox (three preset buttons that fill the tool with sample data and show the result without leaving the page); primary button "Open app"; secondary "Export tutorial file". Page title is the app's plain-English name, not a feature list.
 
 **Workspace `/app/:appId/workspace`** — the tool in a `SplitPane`: input on the left, result on the right. A thin toolbar above: tool actions on the left; "Save to vault" and "Use from AI tools" on the right. No footer bar.
 
@@ -107,6 +136,28 @@ Command palette (⌘K): jump to any page, any app, "New vault item", "Switch the
 | nav.home / apps / mcp / vault | Home / Apps / Connect AI / Vault |
 | action.save | Save to vault |
 | action.saved | Saved to vault |
+| hero.title | Get your code ready for AI, without leaking secrets. |
+| hero.lead | Pack files into one clean block, hide keys and tokens before anything is shared, then test requests, read logs and write prompts. Free, and it runs in your browser. |
+| hero.cta.primary | Open the workbench |
+| hero.cta.signedin | Go to the workbench |
+| hero.cta.tour | Watch the 60-second tour |
+| tutorials.title | See each tool in under a minute |
+| tutorials.sub | Short walkthroughs with captions, played on the real app. |
+| tools.title | Tools that share one vault |
+| tools.sub | Save a result once, find it from any tool, share it with your team. |
+| trust.1 | Stays in your browser. As a guest, nothing leaves this device. Sign in only to sync. |
+| trust.2 | No AI calls inside. Cairnbench prepares text for AI; it never sends yours to a model. |
+| trust.3 | Free to use. No card, no trial clock. |
+| mcp.title | Let your AI agent use it too |
+| mcp.sub | Connect over MCP with scoped tokens you can revoke. |
+| mcp.cta | Set up your AI tool |
+| paste.placeholder | Paste code, logs or a prompt, or drop files here |
+| paste.cta | Pack for AI |
+| apps.recent | Pick up where you left off |
+| apps.recent.empty | Nothing here yet. Paste something above, or open a tool below. |
+| apps.tools | Tools |
+| action.opentool | Open tool |
+| action.watchtutorial | Watch tutorial |
 | action.open | Open app |
 | action.watch | Watch overview |
 | action.copy | Copy |
@@ -134,7 +185,7 @@ Vocabulary rule: an action keeps one name everywhere ("Save to vault" → toast 
 ## 9. Accessibility checklist (every card that adds UI)
 
 1. Keyboard-only: every action reachable with Tab/Shift+Tab, Enter, Space, Esc; tab order = reading order.
-2. Visible focus ring in all four themes.
+2. Visible focus ring in both themes.
 3. Icon-only buttons have `aria-label`.
 4. Form fields have a persistent visible label; errors appear next to the field and are linked with `aria-describedby`.
 5. Color is never the only signal (pair with icon or text).
@@ -142,7 +193,8 @@ Vocabulary rule: an action keeps one name everywhere ("Save to vault" → toast 
 7. Respect `prefers-reduced-motion`.
 8. Headings are in order; one `h1` per page; landmarks `header`, `nav`, `main`.
 9. Zoom to 200% without horizontal scroll; viewport meta without `user-scalable=no`.
-10. `@axe-core/playwright` on the page in all four themes: **0 serious or critical violations** (output pasted).
+10. Any moving content (the tutorial player) never autoplays, has a visible pause button, shows captions by default, and has a text transcript below it.
+11. `@axe-core/playwright` on the page in both themes: **0 serious or critical violations** (output pasted).
 
 ## 10. The `sloplint` gate (Hallmark)
 

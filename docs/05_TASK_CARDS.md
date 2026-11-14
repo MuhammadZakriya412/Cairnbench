@@ -27,17 +27,17 @@ Order matters: do cards in ID order unless STATE.md says otherwise. Each card li
 
 ### Card 0.2 — Design tokens, themes, contrast test
 - **Read first:** 03 §3–4.
-- **Files:** `src/design/tokens.css` (spacing, radius, shadow, type scale), `src/design/themes.css` (4 themes via `[data-theme]`), `src/design/fonts.ts`, `src/design/theme.ts` (read/write the theme, density, motion attributes on the root; default from `prefers-color-scheme`), tests.
-- **Steps:** (1) define every token from 03 §3 exactly; (2) fonts via the two `@fontsource` packages; (3) write a **contrast test** that parses the CSS variables for each theme and asserts every pair listed in 03 §3 meets its minimum; (4) test that `theme.ts` sets and restores attributes and ignores unknown values.
-- **Do not:** invent colors, add a fifth theme, hardcode any hex outside `themes.css`.
+- **Files:** `src/design/tokens.css` (spacing, radius, shadow, type scale), `src/design/themes.css` (2 themes, `cairn-dusk` and `cairn-daylight`, via `[data-theme]`; plus `--ease-calm`), `src/design/fonts.ts`, `src/design/theme.ts` (read/write the theme, density, motion attributes on the root; default from `prefers-color-scheme`), tests.
+- **Steps:** (1) define every token from 03 §3 exactly; (2) fonts via the three `@fontsource` packages (`newsreader` 400/500, `plus-jakarta-sans`, `jetbrains-mono`; import only the weights used); (3) write a **contrast test** that parses the CSS variables for each theme and asserts every pair listed in 03 §3 meets its minimum; (4) test that `theme.ts` sets and restores attributes and ignores unknown values.
+- **Do not:** invent colors, add a third theme, hardcode any hex outside `themes.css`.
 - **Checks:** tests green; deliberately change one token to a failing value → contrast test fails (show), restore.
 
 ### Card 0.3a — Form components
 - **Read first:** 03 §4–5, §9.
 - **Files:** `src/ui/Button`, `InputField`, `TextAreaField`, `SelectField`, `Switch`, `Checkbox` (each folder with component, test, `index.ts`), `src/ui/copy.ts` (strings from 03 §8).
-- **Steps:** build all five states for each; tests with Testing Library asserting label association, `aria-describedby` for errors, disabled/loading behavior (button is disabled and shows progress while `loading`), keyboard activation.
+- **Steps:** first install the five component-test packages approved in 01 §4 (no need to ask) and configure vitest to use `jsdom` for component tests; also install the allowlisted `@playwright/test` and `@axe-core/playwright` and check whether a browser is available in this container (report the command and output). If the axe run cannot work here, write the test anyway, mark that check CANNOT RUN HERE, and list it under USER ACTIONS: it must be run in CI (Card 0.5 adds the CI job) before the card counts as done. Then: build all five states for each; tests with Testing Library asserting label association, `aria-describedby` for errors, disabled/loading behavior (button is disabled and shows progress while `loading`), keyboard activation.
 - **Do not:** add a component outside the list; use raw hex or px values; use placeholder as the label.
-- **Checks:** unit tests green; axe via Playwright on a temporary `/__kit` route in all 4 themes: 0 serious/critical (paste); remove the route before the commit, or keep it only if guarded behind `import.meta.env.DEV`.
+- **Checks:** unit tests green; axe via Playwright on a temporary `/__kit` route in both themes: 0 serious/critical (paste); remove the route before the commit, or keep it only if guarded behind `import.meta.env.DEV`.
 
 ### Card 0.3b — Overlay and feedback components
 - **Files:** `InfoPopover`, `ModalDrawer`, `Tabs`, `Badge`, `Toast` (+ live region), `Skeleton`, `EmptyState`, `ErrorState`, `CopyButton`, `Kbd`.
@@ -45,17 +45,17 @@ Order matters: do cards in ID order unless STATE.md says otherwise. Each card li
 - **Checks:** unit tests + axe as in 0.3a.
 
 ### Card 0.3c — Layout components
-- **Files:** `SplitPane`, `AppCard`, `DiffView`.
+- **Files:** `SplitPane`, `ToolRow`, `FeatureRow`, `DiffView`, `SiteHeader`, `SiteFooter`, `TrustStrip`.
 - **Steps:** `SplitPane` uses `react-resizable-panels`, keyboard resizing documented in its README (read it, quote). `DiffView` uses `diff`; both modes; tests with a 3-line before/after.
 - **Checks:** unit tests + axe.
 
 ### Card 0.4 — Application shell and routing
 - **Read first:** 03 §6–7, 01 §7.
 - **Files:** `src/shell/*`, `src/pages/*/index.tsx` (placeholder pages that render a real heading and an `EmptyState` — not lorem ipsum), logo SVG component `src/ui/Logo`, `src/shell/CommandPalette`.
-- **Steps:** top bar per 03 §6; routes per 01 §7; `?docs=x` redirect; command palette with the actions listed in 03 §6; mobile menu under 768 px; theme menu with the four themes; org switcher renders "Personal" only until Phase 2.
+- **Steps:** top bar per 03 §6; routes per 01 §7; `?docs=x` redirect; command palette with the actions listed in 03 §6; mobile menu under 768 px; theme menu with System, Dusk (dark) and Daylight (light); org switcher renders "Personal" only until Phase 2.
 - **Also:** create `src/apps/registry.ts` per 01 §5.1 with the four launch apps as manifests whose `workspace` is a lazy placeholder; nav, Home, Apps page and palette read it. Add a test: registering a fake fifth app (in the test only) makes it appear in Home, Apps and the palette with no other file changed.
 - **Do not:** add a footer/status bar; add a fifth top-level destination.
-- **Checks:** Playwright test navigates every route by keyboard; ⌘K/Ctrl+K opens and Esc closes; axe in all themes on `/`; screenshot at 375 px and 1280 px saved to the test-results folder (paths listed).
+- **Checks:** Playwright test navigates every route by keyboard; ⌘K/Ctrl+K opens and Esc closes; axe in both themes on `/`; screenshot at 375 px and 1280 px saved to the test-results folder (paths listed).
 
 ### Card 0.5 — Quality gates
 - **Files:** `public/_headers` (CSP, `frame-ancestors 'none'`, referrer policy), CI additions, `docs/SECURITY_CHECKLIST.md` (from 02 §11), `package.json` script `sloplint`.
@@ -103,7 +103,7 @@ Order matters: do cards in ID order unless STATE.md says otherwise. Each card li
 - **Read first:** 04 §1, 03 §7.
 - **Files:** `src/apps/context-packer/*`, `src/core/pack/*` (file selection, ignore rules, formatters, zip guard), worker wiring, tests, a sample project fixture.
 - **Steps:** build in this order, each with tests first: file selection rules → formatters (three formats) → zip guard → scrub UI with per-hit switches → diff → token estimate and budget meter → compact-HTML mode → save to vault.
-- **Checks:** unit tests; Playwright flow: paste a text containing a runtime-built AWS example key → hit listed → toggle off → output changes accordingly → save → appears in `/vault`; axe in 4 themes.
+- **Checks:** unit tests; Playwright flow: paste a text containing a runtime-built AWS example key → hit listed → toggle off → output changes accordingly → save → appears in `/vault`; axe in both themes.
 
 ### Card 1.7 — Vault page
 - **Files:** `src/pages/Vault/*`.
@@ -145,24 +145,34 @@ Order matters: do cards in ID order unless STATE.md says otherwise. Each card li
 
 ## PHASE 3 — Home, previews, tutorials, docs
 
-### Card 3.0 — Spike: HyperFrames
-- **Goal:** answer with evidence: license, whether an embeddable browser runtime exists, composition format.
-- **Steps:** the **user** pastes the official README and `LICENSE` text from `heygen-com/hyperframes`; Gemini summarizes **only what is pasted** and proposes the smallest player design; any claim not in the paste is marked UNVERIFIED.
+### Card 3.0 — Spike: HyperFrames (optional export path only)
+- **Goal:** answer with evidence: license, whether it can export MP4 from our scene data. **Tutorials do not depend on it:** the player in 3.2 is our own code.
+- **Steps:** the **user** pastes the official README and `LICENSE` text from `heygen-com/hyperframes`; Gemini summarizes **only what is pasted**; any claim not in the paste is marked UNVERIFIED. Skip this card entirely if you do not want exported videos.
 - **Files:** `docs/HYPERFRAMES_SPIKE.md`. No code.
 
-### Card 3.1 — Home and Apps pages
-- Per 03 §7; intent chips highlight the matching app; app cards show saved counts from the active store.
-- **Checks:** Playwright; axe; keyboard-only run.
+### Card 3.1 — Landing page and workbench page
+- **Read first:** 03 §1–§3, §5, §7, §8; 01 §5.1.
+- **Files:** `src/pages/Home/*` (all six sections), `src/pages/Apps/*` (`PasteStrip`, recent list, tool index), `src/ui/ProductWindow`, `src/ui/McpBand`, `src/ui/PasteStrip`, wiring to the registry, copy keys in `src/ui/copy.ts`.
+- **Steps:** build Home exactly per 03 §7 (strings from the copy deck only). The tutorials section may show the player placeholder until 3.2 lands, but must be a real component with an empty state, not fake data. `ProductWindow` is built from UI-kit components and the sample fixture in `src/tests/fixtures`, with two redactions shown using the real rule ids (for example `[REDACTED:aws-access-key]`). Recent list reads the active VaultStore.
+- **Do not:** add logos, testimonials, ratings, statistics, stock images, gradients or any card grid; add routes beyond 01 §7.
+- **Checks:** Playwright: keyboard-only run through Home and Apps; screenshot at 375 px and 1280 px in both themes saved to test-results (paths listed); axe in both themes; a test asserting Home renders one `FeatureRow` per registered app (fake app in the test).
 
-### Card 3.2 — App Preview and player
-- `HyperFramesPlayer` as decided in 3.0: play/pause, scrubber, speed 1/1.5/2, chapters, captions, keyboard shortcuts, reduced-motion pause, text transcript below; 3-step sandbox; Export tutorial file.
-- **Checks:** unit tests for the timeline controller (seek, speed, chapter jump); axe.
+### Card 3.2 — TutorialPlayer and App Preview
+- **Read first:** 03 §5, §7, §9; 04 §6.
+- **Files:** `src/core/tutorial/*` (pure timeline controller and scene schema in Zod), `src/ui/TutorialPlayer`, `src/pages/AppPreview/*`, `docs/TUTORIAL_AUTHORING.md` (the `data-tour` convention).
+- **Steps:** controller first with tests (seek, play/pause, speed 1/1.5/2, chapter jump, end-of-scene, unknown action rejected by Zod); then the player: runs scene actions on the real components in a sandboxed instance with sample data (never the user's vault), captions on by default, transcript below, play/pause, scrubber, chapters, keyboard shortcuts (Space, ←/→, C), reduced motion = no cursor animation, jump between steps. **Never autoplay.**
+- **Checks:** unit tests for the controller; Playwright test plays scene 1 to the end by seeking; axe in both themes.
 
 ### Card 3.3 — Docs reader and InfoPopover wiring
-- Render `docs/tutorials/*.md` at build time (ask which markdown library — not on allowlist); popover topic ids all resolve; broken ids fail a test.
+- Render `docs/tutorials/*.md` at build time (ask which markdown library; it is not on the allowlist); popover topic ids all resolve; broken ids fail a test.
 
-### Card 3.4 — Tutorial content
-- Four tutorials, 45–75 s each, captions only, steps match the real UI; each has ≥ 5 chapters. Content written from the actual shipped UI, not imagined.
+### Card 3.4 — Tutorial scenes
+- **Read first:** 04 §6.
+- Implement the four scenes from 04 §6 as data files in `src/apps/<id>/tutorial.ts`, one per app, plus a `data-tour` attribute on every element a scene targets. Each scene is 45–75 s with at least 5 chapters. Content must match the shipped UI; if a target does not exist, STOP and report instead of inventing it.
+- **Checks:** a test that every `target` in every scene resolves in the rendered app; total scene length within 45–75 s.
+
+### Card 3.5 — Optional: hero LiveScrubDemo
+- Build last, only after Phase 8. A textarea pre-filled with a fake key built at runtime (never a literal secret-looking string in source), showing redaction live with the real scrubber engine. Nothing is sent anywhere. Checks: unit test; axe; keyboard.
 
 ---
 
@@ -197,7 +207,7 @@ Order matters: do cards in ID order unless STATE.md says otherwise. Each card li
 ## PHASE 8 — Hardening and launch tiers
 
 ### Card 8.1 — Accessibility and performance pass
-Run axe on every route in four themes; initial JS ≤ 200 KB gzip excluding lazy chunks (report from the build); Lighthouse CI score ≥ 90 on `/` (paste); fix findings.
+Run axe on every route in both themes; initial JS ≤ 200 KB gzip excluding lazy chunks (report from the build); Lighthouse CI score ≥ 90 on `/` (paste); fix findings.
 
 ### Card 8.2 — Free-tier guards
 `MAX_USERS` waitlist screen, `PROXY_ENABLED`/`MCP_ENABLED` handling, 80%/95% storage states, a keep-alive scheduled workflow (GitHub Actions cron calling a cheap public RPC), encrypted weekly backup workflow (user generates the `age` key pair locally and stores the private key offline; Gemini writes the workflow using the public key only).
@@ -224,7 +234,7 @@ Privacy notice and terms from plain-language templates the user supplies; contac
 - **Files:** `src/apps/<id>/*`, optional `src/core/<id>/*`, one line in `src/apps/registry.ts`, tests, one tutorial entry if the manifest names one.
 - **Steps:** write the spec in 04 (user) → core engine with tests first → `contentSchema` + `schemaVersion: 1` + `migrate` (identity) with a test → workspace UI with all five states → registry entry → vault save/load round trip in guest and cloud modes → optional `mcpTools`.
 - **Do not:** touch other apps, nav, DB migrations (unless the spec says a new table), or add a dependency without asking.
-- **Checks:** registry grep gate passes; vault round-trip test; axe in four themes on `/app/<id>/workspace`; initial JS budget unchanged (new app is a lazy chunk).
+- **Checks:** registry grep gate passes; vault round-trip test; axe in both themes on `/app/<id>/workspace`; initial JS budget unchanged (new app is a lazy chunk).
 - **If it needs a new table or Edge Function:** that is a separate card with its own matrix tests, never part of A.1.
 
 ---
