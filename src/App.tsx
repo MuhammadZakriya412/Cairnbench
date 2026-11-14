@@ -4,13 +4,23 @@ import './design/fonts';
 import type { ThemeId } from './design/theme';
 import './design/themes.css';
 import './design/tokens.css';
+import { Badge } from './ui/Badge';
 import { Button } from './ui/Button';
 import { Checkbox } from './ui/Checkbox';
+import { CopyButton } from './ui/CopyButton';
 import { COPY } from './ui/copy';
+import { EmptyState } from './ui/EmptyState';
+import { ErrorState } from './ui/ErrorState';
+import { InfoPopover } from './ui/InfoPopover';
 import { InputField } from './ui/InputField';
+import { Kbd } from './ui/Kbd';
+import { ModalDrawer } from './ui/ModalDrawer';
 import { SelectField } from './ui/SelectField';
+import { Skeleton } from './ui/Skeleton';
 import { Switch } from './ui/Switch';
+import { Tabs } from './ui/Tabs';
 import { TextAreaField } from './ui/TextAreaField';
+import { Toast, ToastRegion } from './ui/Toast';
 
 function FormKitView(): React.ReactElement {
   const initialTheme: ThemeId =
@@ -24,6 +34,8 @@ function FormKitView(): React.ReactElement {
   const [selectValue, setSelectValue] = useState('markdown');
   const [switchChecked, setSwitchChecked] = useState(true);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
+  const [activeTab, setActiveTab] = useState('my-vault');
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <main
@@ -34,21 +46,13 @@ function FormKitView(): React.ReactElement {
       <div className="flex flex-col gap-[var(--space-24)]">
         <header className="flex items-center justify-between gap-[var(--space-16)] border-b border-[var(--border)] pb-[var(--space-16)]">
           <h1 className="font-[family-name:var(--font-serif)] text-[length:var(--text-28)] font-normal m-0">
-            {BRAND_NAME} Form Components Kit
+            {BRAND_NAME} UI Kit
           </h1>
           <div className="flex items-center gap-[var(--space-8)]">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setKitTheme('cairn-dusk')}
-            >
+            <Button variant="secondary" size="sm" onClick={() => setKitTheme('cairn-dusk')}>
               Dusk
             </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setKitTheme('cairn-daylight')}
-            >
+            <Button variant="secondary" size="sm" onClick={() => setKitTheme('cairn-daylight')}>
               Daylight
             </Button>
           </div>
@@ -56,55 +60,27 @@ function FormKitView(): React.ReactElement {
 
         <section aria-labelledby="kit-buttons" className="flex flex-col gap-[var(--space-12)]">
           <h2 id="kit-buttons" className="text-[length:var(--text-20)] font-medium m-0">
-            Buttons
+            Buttons & Copy
           </h2>
           <div className="flex flex-wrap items-center gap-[var(--space-12)]">
             <Button variant="primary">{COPY['action.save']}</Button>
             <Button variant="secondary">{COPY['action.copy']}</Button>
             <Button variant="ghost">{COPY['action.open']}</Button>
             <Button variant="danger">{COPY['action.delete']}</Button>
-            <Button variant="primary" loading={true}>
-              {COPY['action.save']}
-            </Button>
-            <Button variant="secondary" disabled={true}>
-              {COPY['action.share']}
-            </Button>
+            <CopyButton value="cb_YOUR_TOKEN" />
+            <Kbd keys={['Ctrl', 'K']} ariaLabel="Command palette shortcut" />
           </div>
-          <Button
-            emptyMessage="No action configured."
-            emptyActionLabel={COPY['action.open']}
-            onEmptyAction={() => undefined}
-          />
-          <Button
-            errorMessage={COPY['error.network']}
-            errorCode="E-VAULT-LOAD"
-            onRetry={() => undefined}
-          />
         </section>
 
         <section aria-labelledby="kit-inputs" className="flex flex-col gap-[var(--space-16)]">
           <h2 id="kit-inputs" className="text-[length:var(--text-20)] font-medium m-0">
-            Inputs & TextAreas
+            Form Controls
           </h2>
           <InputField
             label="Vault item title"
             hint="Visible label and helper text."
             value={textValue}
             onChange={(val) => setTextValue(val)}
-          />
-          <InputField
-            label="Invalid title"
-            error={COPY['error.quota']}
-            errorCode="E-VAULT-ITEM-TOO-LARGE"
-            onRetry={() => undefined}
-            value="Oversized item"
-            onChange={() => undefined}
-          />
-          <InputField
-            label="Loading input"
-            loading={true}
-            value=""
-            onChange={() => undefined}
           />
           <TextAreaField
             label="Source text"
@@ -113,15 +89,8 @@ function FormKitView(): React.ReactElement {
             value={areaValue}
             onChange={(val) => setAreaValue(val)}
           />
-        </section>
-
-        <section aria-labelledby="kit-selects" className="flex flex-col gap-[var(--space-16)]">
-          <h2 id="kit-selects" className="text-[length:var(--text-20)] font-medium m-0">
-            Select, Switch, Checkbox
-          </h2>
           <SelectField
             label="Output format"
-            hint="Select output wrapper."
             options={[
               { value: 'markdown', label: 'Markdown block' },
               { value: 'xml', label: 'XML tags' },
@@ -131,15 +100,73 @@ function FormKitView(): React.ReactElement {
           />
           <Switch
             label="Redact AWS access keys"
-            hint="Masks AKIA keys."
             checked={switchChecked}
             onChange={setSwitchChecked}
           />
           <Checkbox
             label={COPY['encrypt.confirm']}
-            hint="Required before encrypting."
             checked={checkboxChecked}
             onChange={(val) => setCheckboxChecked(val)}
+          />
+        </section>
+
+        <section aria-labelledby="kit-overlays" className="flex flex-col gap-[var(--space-16)]">
+          <h2 id="kit-overlays" className="text-[length:var(--text-20)] font-medium m-0">
+            Overlays & Feedback
+          </h2>
+          <div className="flex flex-wrap items-center gap-[var(--space-12)]">
+            <InfoPopover
+              topicId="context-packer-redaction"
+              summary="Redaction masks secret formats locally in your browser."
+            />
+            <ModalDrawer
+              open={drawerOpen}
+              onOpenChange={setDrawerOpen}
+              title="Share vault item"
+              description="Scoped share link settings."
+              trigger={<Button variant="secondary">{COPY['action.share']}</Button>}
+            >
+              <p className="m-0 text-[length:var(--text-14)]">Share dialog body</p>
+            </ModalDrawer>
+            <Badge variant="neutral">context-packer</Badge>
+            <Badge variant="accent">MCP</Badge>
+            <Badge variant="success">Active</Badge>
+            <Badge variant="warning">80% quota</Badge>
+            <Badge variant="danger">Revoked</Badge>
+          </div>
+
+          <Tabs
+            ariaLabel="Vault sections"
+            activeId={activeTab}
+            onChange={setActiveTab}
+            tabs={[
+              { id: 'my-vault', label: 'My vault', content: <p className="m-0">Personal items</p> },
+              { id: 'team-vault', label: 'Team', content: <p className="m-0">Shared items</p> },
+            ]}
+          />
+
+          <ToastRegion>
+            <Toast
+              variant="success"
+              message={COPY['action.saved']}
+              actionLabel={COPY['action.open']}
+              onAction={() => undefined}
+            />
+          </ToastRegion>
+
+          <Skeleton label="Loading preview lines" lines={2} variant="line" />
+
+          <EmptyState
+            title="Vault is empty"
+            description={COPY['empty.vault']}
+            actionLabel={COPY['action.open']}
+            onAction={() => undefined}
+          />
+
+          <ErrorState
+            message={COPY['error.network']}
+            code="E-VAULT-LOAD"
+            onRetry={() => undefined}
           />
         </section>
       </div>

@@ -29,6 +29,8 @@ Recorded from `package.json`, `node_modules/*/package.json`, and `npm view` outp
 | `jsdom` | `dependencies` | `^31.0.1` | `31.0.1` | `31.0.1` | Card 0.3a | Active (`01 §4`); Vitest DOM environment |
 | `@playwright/test` | `dependencies` | `^1.65.1` | `1.65.1` | `1.65.1` | Card 0.3a | Active (`01 §4`) |
 | `@axe-core/playwright` | `dependencies` | `^4.14.0` | `4.14.0` | `4.14.0` | Card 0.3a | Active (`01 §4`); peer `playwright-core: >= 1.0.0` |
+| `@radix-ui/react-popover` | `dependencies` | `^1.3.1` | `1.3.1` | `1.3.1` | Card 0.3b | Active (`01 §4`); peer `react: ^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc`, `react-dom: ^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc` |
+| `@radix-ui/react-dialog` | `dependencies` | `^1.3.1` | `1.3.1` | `1.3.1` | Card 0.3b | Active (`01 §4`); peer `react: ^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc`, `react-dom: ^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc` |
 | `typescript` | `devDependencies` | `~6.0.3` | `6.0.3` | `7.0.2` | scaffold / Card 0.1 | Active (`01 §4`); pinned from `^7.0.2` to `~6.0.3` because `typescript-eslint@8.72.2` requires `peer typescript@">=4.8.4 <6.1.0"` |
 | `tailwindcss` | `devDependencies` | `^4.3.3` | `4.3.5` | `4.3.5` | scaffold | Active (`01 §4`) |
 | `@types/node` | `devDependencies` | `^22.14.0` | `22.20.5` | `26.6.6` | scaffold | Active; matches container Node `v22.23.2` and `vitest@5.1.0` peer `@types/node: ^22.0.0 \|\| >=24.0.0` |
@@ -49,8 +51,6 @@ Recorded from `package.json`, `node_modules/*/package.json`, and `npm view` outp
 | `react-router-dom` | `7.18.5` | `7.18.5` | `react: >=18`, `react-dom: >=18` | Compatible with `react@19.3.1` |
 | `@tanstack/react-query` | `5.107.1` | `5.107.1` | `react: ^18 \|\| ^19` | Compatible with `react@19.3.1` |
 | `zustand` | `5.1.0` | `5.1.0` | `react: >=18.0.0`, `immer: >=9.0.6` (optional), `use-sync-external-store: >=1.2.0` (optional) | Compatible with `react@19.3.1` |
-| `@radix-ui/react-popover` | `1.3.1` | `1.3.1` | `react: ^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc`, `react-dom: ...` | Compatible with `react@19.3.1` |
-| `@radix-ui/react-dialog` | `1.3.1` | `1.3.1` | `react: ^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc`, `react-dom: ...` | Compatible with `react@19.3.1` |
 | `cmdk` | `1.1.1` | `1.1.1` | `react: ^18 \|\| ^19 \|\| ^19.0.0-rc`, `react-dom: ^18 \|\| ^19 \|\| ^19.0.0-rc` | Compatible with `react@19.3.1` |
 | `react-resizable-panels` | `4.22.1` | `4.22.1` | `react: ^18.0.0 \|\| ^19.0.0`, `react-dom: ^18.0.0 \|\| ^19.0.0` | Compatible with `react@19.3.1` |
 | `@tanstack/react-virtual` | `3.14.26` | `3.14.26` | `react: ^16.8.0 \|\| ^17.0.0 \|\| ^18.0.0 \|\| ^19.0.0`, `react-dom: ...` | Compatible with `react@19.3.1` |

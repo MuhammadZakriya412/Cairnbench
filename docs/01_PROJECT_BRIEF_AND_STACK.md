@@ -184,6 +184,7 @@ Billing, email sending, LLM calls, mobile apps, i18n, real-time collaboration, c
 
 1. Card's acceptance checks all PASS with output pasted, or an explicit NOT RUN/CANNOT RUN HERE with reason.
 2. `npm run typecheck`, `npm run lint`, `npm test` exit 0 (output pasted).
+   Whenever `package.json` changed in the card: also `npm ci --dry-run` exits 0, and `ls -l package-lock.json` plus `grep -c "<one newly added package>" package-lock.json` show the lockfile contains it (output pasted). CI uses `npm ci`, which fails if the lockfile is stale. (This failed on Card 0.3a: the container's lockfile was never updated.)
 3. No file over 250 lines; no new dependency outside the allowlist.
 4. `docs/STATE.md` updated; USER ACTIONS listed.
 5. The user can confirm GitHub Actions is green. If the user reports red, the card reopens.
