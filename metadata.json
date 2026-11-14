@@ -1,0 +1,6 @@
+{
+  "name": "Veritas Core",
+  "description": "Local-first digital media forensics, binary entropy inspection, ENF audio splice analysis, and Model Context Protocol (MCP) studio built on Rust/WebAssembly, TypeScript, and Supabase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
