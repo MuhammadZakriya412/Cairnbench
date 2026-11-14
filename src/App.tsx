@@ -9,18 +9,34 @@ import { Button } from './ui/Button';
 import { Checkbox } from './ui/Checkbox';
 import { CopyButton } from './ui/CopyButton';
 import { COPY } from './ui/copy';
+import { DiffView } from './ui/DiffView';
 import { EmptyState } from './ui/EmptyState';
 import { ErrorState } from './ui/ErrorState';
+import { FeatureRow } from './ui/FeatureRow';
 import { InfoPopover } from './ui/InfoPopover';
 import { InputField } from './ui/InputField';
 import { Kbd } from './ui/Kbd';
 import { ModalDrawer } from './ui/ModalDrawer';
 import { SelectField } from './ui/SelectField';
+import { SiteFooter } from './ui/SiteFooter';
+import { SiteHeader } from './ui/SiteHeader';
 import { Skeleton } from './ui/Skeleton';
+import { SplitPane } from './ui/SplitPane';
 import { Switch } from './ui/Switch';
 import { Tabs } from './ui/Tabs';
 import { TextAreaField } from './ui/TextAreaField';
 import { Toast, ToastRegion } from './ui/Toast';
+import { ToolRow } from './ui/ToolRow';
+import { TrustStrip } from './ui/TrustStrip';
+
+const KIT_DIFF_BEFORE = ['host = "localhost"', 'key = "raw_secret_value"', 'port = 5432'].join(
+  '\n',
+);
+const KIT_DIFF_AFTER = [
+  'host = "localhost"',
+  'key = "[REDACTED:generic-secret]"',
+  'port = 5432',
+].join('\n');
 
 function FormKitView(): React.ReactElement {
   const initialTheme: ThemeId =
@@ -38,13 +54,20 @@ function FormKitView(): React.ReactElement {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <main
+    <div
       id="kit-root"
       data-theme={theme}
-      className="min-h-screen bg-[var(--bg)] text-[var(--text)] p-[var(--space-24)] font-[family-name:var(--font-sans)]"
+      className="min-h-screen bg-[var(--bg)] text-[var(--text)] font-[family-name:var(--font-sans)] flex flex-col"
     >
-      <div className="flex flex-col gap-[var(--space-24)]">
-        <header className="flex items-center justify-between gap-[var(--space-16)] border-b border-[var(--border)] pb-[var(--space-16)]">
+      <SiteHeader
+        currentPath="/apps"
+        onToggleTheme={() =>
+          setKitTheme((prev) => (prev === 'cairn-dusk' ? 'cairn-daylight' : 'cairn-dusk'))
+        }
+      />
+
+      <main className="flex-1 p-[var(--space-24)] flex flex-col gap-[var(--space-24)]">
+        <div className="flex items-center justify-between gap-[var(--space-16)] border-b border-[var(--border)] pb-[var(--space-16)]">
           <h1 className="font-[family-name:var(--font-serif)] text-[length:var(--text-28)] font-normal m-0">
             {BRAND_NAME} UI Kit
           </h1>
@@ -56,7 +79,7 @@ function FormKitView(): React.ReactElement {
               Daylight
             </Button>
           </div>
-        </header>
+        </div>
 
         <section aria-labelledby="kit-buttons" className="flex flex-col gap-[var(--space-12)]">
           <h2 id="kit-buttons" className="text-[length:var(--text-20)] font-medium m-0">
@@ -169,8 +192,38 @@ function FormKitView(): React.ReactElement {
             onRetry={() => undefined}
           />
         </section>
-      </div>
-    </main>
+
+        <section aria-labelledby="kit-layout" className="flex flex-col gap-[var(--space-16)]">
+          <h2 id="kit-layout" className="text-[length:var(--text-20)] font-medium m-0">
+            Layout Components
+          </h2>
+          <SplitPane
+            leftTitle="Input"
+            rightTitle="Result"
+            left={<p className="m-0 text-[length:var(--text-14)]">Source files</p>}
+            right={<p className="m-0 text-[length:var(--text-14)]">Packed output</p>}
+          />
+          <ToolRow
+            index={1}
+            appId="context-packer"
+            name="Context Packer"
+            tagline="Turn files or pasted text into one AI-ready block and redact secrets."
+            savedCount={3}
+          />
+          <FeatureRow
+            appId="context-packer"
+            name="Context Packer"
+            description="Pack files into one clean block and redact common secret patterns."
+            snippet={['AWS_KEY=[REDACTED:aws-access-key]', 'tokens: 1,420 (budget: 8,000)']}
+          />
+          <DiffView before={KIT_DIFF_BEFORE} after={KIT_DIFF_AFTER} mode="unified" />
+          <DiffView before={KIT_DIFF_BEFORE} after={KIT_DIFF_AFTER} mode="split" />
+          <TrustStrip />
+        </section>
+      </main>
+
+      <SiteFooter />
+    </div>
   );
 }
 
