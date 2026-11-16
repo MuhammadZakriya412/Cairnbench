@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { BRAND_NAME } from '../../config/brand';
 import { Button } from '../Button';
 import { COPY } from '../copy';
+import { Logo } from '../Logo';
 
 export interface SiteHeaderProps {
   currentPath?: string;
@@ -116,22 +117,17 @@ export function SiteHeader({
 
   return (
     <header className="w-full border-b border-[var(--border)] bg-[var(--bg)] font-[family-name:var(--font-sans)] text-[var(--text)]">
-      <div className="flex items-center justify-between gap-[var(--space-16)] px-[var(--space-24)] py-[var(--space-12)]">
-        <div className="flex items-center gap-[var(--space-24)]">
+      <div className="flex items-center justify-between gap-[var(--space-8)] md:gap-[var(--space-16)] px-[var(--space-12)] md:px-[var(--space-24)] py-[var(--space-12)]">
+        <div className="flex items-center gap-[var(--space-12)] md:gap-[var(--space-24)]">
           <a
             href={disabled ? undefined : '/'}
             role={disabled ? 'link' : undefined}
             aria-disabled={disabled ? 'true' : undefined}
             tabIndex={disabled ? -1 : 0}
             onClick={handleLinkClick('/')}
-            className="inline-flex items-center gap-[var(--space-8)] font-[family-name:var(--font-serif)] text-[length:var(--text-20)] font-medium tracking-[var(--tracking-heading)] text-[var(--text)] no-underline focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-[var(--accent)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
+            className="inline-flex items-center no-underline focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-[var(--accent)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
           >
-            <svg aria-hidden="true" viewBox="0 0 24 24" className="w-[var(--space-24)] h-[var(--space-24)] shrink-0">
-              <rect x="7" y="3" width="10" height="4" rx="2" fill="var(--accent)" />
-              <rect x="5" y="9" width="14" height="5" rx="2.5" fill="var(--accent)" />
-              <rect x="3" y="16" width="18" height="5" rx="2.5" fill="var(--border-strong)" />
-            </svg>
-            <span>{BRAND_NAME}</span>
+            <Logo showWordmark disabled={disabled} />
           </a>
 
           <nav aria-label="Primary navigation" className="hidden md:flex items-center gap-[var(--space-8)]">
@@ -157,7 +153,7 @@ export function SiteHeader({
           </nav>
         </div>
 
-        <div className="flex items-center gap-[var(--space-8)]">
+        <div className="flex items-center gap-[var(--space-4)] md:gap-[var(--space-8)]">
           <button
             type="button"
             disabled={disabled}
@@ -207,16 +203,16 @@ export function SiteHeader({
             <Settings aria-hidden="true" className="w-[var(--space-16)] h-[var(--space-16)]" />
           </a>
 
-          <Button
-            variant="secondary"
-            size="sm"
+          <button
+            type="button"
             disabled={disabled}
             onClick={onOpenCommandPalette}
-            icon={<Search className="w-[var(--space-16)] h-[var(--space-16)]" />}
+            className="inline-flex items-center justify-center gap-[var(--space-8)] min-h-[var(--target-desktop)] min-w-[var(--target-desktop)] px-[var(--space-8)] md:px-[var(--space-12)] py-[var(--space-4)] rounded-[var(--radius-5)] border border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text)] transition-[transform,opacity] duration-[var(--duration-fast)] ease-[var(--ease-calm)] hover:bg-[var(--accent-wash)] active:scale-[0.99] focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-[var(--accent)] focus-visible:outline-offset-[var(--focus-ring-offset)] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
           >
+            <Search aria-hidden="true" className="w-[var(--space-16)] h-[var(--space-16)] shrink-0" />
             <span className="sr-only">Open command palette </span>
-            <span className="font-[family-name:var(--font-mono)] text-[length:var(--text-12)]">Ctrl+K</span>
-          </Button>
+            <span className="hidden md:inline font-[family-name:var(--font-mono)] text-[length:var(--text-12)]">Ctrl+K</span>
+          </button>
         </div>
       </div>
 

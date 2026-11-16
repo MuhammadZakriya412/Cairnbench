@@ -11,7 +11,7 @@ Gemini writes the SQL and TypeScript. This file defines **what must be true**. T
 5. **Email-verified check:** the exact JWT claim path for email verification is not certain. Do **not** read it from the JWT. Instead define `public.current_user_email_verified()` that reads `email_confirmed_at` for `auth.uid()` from `auth.users` inside a `SECURITY DEFINER` function, and use only that function.
 6. SHA-256 hashing is done in SQL with the built-in `sha256(bytea)` function (Postgres core): `encode(sha256(convert_to(value,'UTF8')),'hex')`. Do not enable extensions for hashing.
 7. Never use generated columns for size accounting (immutability rules are easy to get wrong). Compute sizes in a `BEFORE INSERT OR UPDATE` trigger with `pg_column_size`/`octet_length`.
-8. The `service_role` key is **never used** anywhere (L-rules in 01). Edge Functions use only the anon key plus the caller's JWT, or call the `SECURITY DEFINER` RPCs below.
+8. The secret key (`sb_secret_...`) and legacy `service_role` key are **never used** anywhere (L-rules in 01). Edge Functions use only the publishable key plus the caller's JWT, or call the `SECURITY DEFINER` RPCs below.
 9. All multi-step changes (create org + make owner, redeem token + insert share) happen inside one RPC function so they are atomic.
 10. Number migrations `001_...sql`, `002_...sql`. A migration never edits an earlier migration; fixes are new migrations.
 11. If any SQL feature, function name or setting is uncertain, STOP and ask the user to run a one-line probe in the SQL Editor (for example `select proname from pg_proc where proname = 'sha256';`) and paste the output.
@@ -134,7 +134,7 @@ Usage warnings: at 80% of the user quota show a notice in Settings; at 95% refus
 
 ## 8. Proxy Edge Function (`supabase/functions/proxy`) — rules
 
-Authentication: requires the caller's JWT; create a Supabase client with the anon key and the caller's `Authorization` header; reject if `auth.getUser()` fails. Then call `consume_usage('proxy', 100)`. A `PROXY_ENABLED` environment setting set to anything but `true` makes it return `503 proxy_disabled`.
+Authentication: requires the caller's JWT; create a Supabase client with the publishable key and the caller's `Authorization` header; reject if `auth.getUser()` fails. Then call `consume_usage('proxy', 100)`. A `PROXY_ENABLED` environment setting set to anything but `true` makes it return `503 proxy_disabled`.
 
 Request validation (Zod): method in GET/POST/PUT/PATCH/DELETE/HEAD, url string ≤2048, headers ≤30 entries, body ≤1 MB.
 
@@ -171,7 +171,7 @@ Gemini cannot start local Supabase. Procedure for every migration card:
 
 - RLS enabled on every `public` table (query lists any table without it; output pasted).
 - No policy uses `USING (true)` on a table that holds user data.
-- No `service_role` anywhere (search output pasted).
+- No `service_role` or `sb_secret_` anywhere (search output pasted).
 - Every RPC listed in §5 exists, is `SECURITY DEFINER` only where required, and has `search_path` fixed.
 - Raw tokens appear only in function return values, never in tables or logs.
 - Content Security Policy header set by Pages `_headers` file: no inline scripts, `frame-ancestors 'none'`, `connect-src` limited to the Supabase URL.

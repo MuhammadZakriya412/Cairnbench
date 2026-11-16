@@ -59,7 +59,7 @@ Order matters: do cards in ID order unless STATE.md says otherwise. Each card li
 
 ### Card 0.5 — Quality gates
 - **Files:** `public/_headers` (CSP, `frame-ancestors 'none'`, referrer policy), CI additions, `docs/SECURITY_CHECKLIST.md` (from 02 §11), `package.json` script `sloplint`.
-- **Steps:** add Playwright + axe job to CI (install Chromium in the job); add a CI step that fails if `service_role` appears in tracked files; add a CI step that fails if any app id string (e.g. `context-packer`) appears in `src/` outside `src/apps/` and `src/apps/registry.ts`; wire `sloplint` **only after the user has placed `scripts/sloplint.mjs`** (read its header/`--help`, quote supported options).
+- **Steps:** add Playwright + axe job to CI (install Chromium in the job); add a CI step that fails if `service_role` or `sb_secret_` appears in tracked files; add a CI step that fails if any app id string (e.g. `context-packer`) appears in `src/` outside `src/apps/` and `src/apps/registry.ts`; wire `sloplint` **only after the user has placed `scripts/sloplint.mjs`** (read its header/`--help`, quote supported options).
 - **Checks:** CI workflow runs; local equivalents pasted.
 - **User actions:** download the official `sloplint.mjs` from `Nutlope/hallmark` into `scripts/`; confirm its license file allows use; push; confirm Actions green. **Gate for Phase 0.**
 
@@ -81,10 +81,10 @@ Order matters: do cards in ID order unless STATE.md says otherwise. Each card li
 ### Card 1.3 — Supabase client, config, auth UI
 - **Read first:** 01 §9, 02 §1.
 - **Files:** `src/lib/supabase.ts`, `src/pages/Auth/*`, `src/vault/useStore.ts`.
-- **Steps:** create the client **only if** `SUPABASE_URL` and `SUPABASE_ANON_KEY` are non-empty; otherwise export `null` and run guest-only; sign-in with Google, GitHub (OAuth), email+password (min length 12); handle chosen after first sign-in; show `cloud.off` when unconfigured; call `signup_allowed()` before sign-up **once migration 001 exists** (until then, skip with a note).
+- **Steps:** first read the current Supabase docs (JS client setup and API keys guide), quote the URL and the exact client call in REPORT; create the client **only if** `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are non-empty; otherwise export `null` and run guest-only; sign-in with Google, GitHub (OAuth), email+password (min length 12); handle chosen after first sign-in; show `cloud.off` when unconfigured; call `signup_allowed()` before sign-up **once migration 001 exists** (until then, skip with a note).
 - **Do not:** write any provider secret anywhere; call admin APIs.
 - **Checks:** with empty config, the app builds and works as guest (Playwright); unit test the "no config" branch.
-- **User actions:** in Supabase create the project; enable Google and GitHub providers per the steps in 06 §7; paste URL and anon key into `src/config/public.ts` (the anon key is public by design).
+- **User actions:** in Supabase create the project; enable Google and GitHub providers per the steps in 06 §7; paste URL and publishable key into `src/config/public.ts` (the publishable key is public by design).
 
 ### Card 1.4 — Migration 001 (profiles, vault) and tests
 - **Read first:** 02 (all of §1–§4, §6, §10).

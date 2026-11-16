@@ -155,9 +155,11 @@ The app picks one store from auth state. When a guest signs in, the **importer**
 
 ## 9. Config and secrets
 
-- `src/config/public.ts` exports `SUPABASE_URL` and `SUPABASE_ANON_KEY` as plain constants that the user edits. They are public by design; Row-Level Security is the protection. If either is empty, the app runs in guest-only mode and shows a clear "Cloud sync is off" notice in Settings.
+- `src/config/public.ts` exports `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` as plain constants that the user edits. They are public by design; Row-Level Security is the protection. If either is empty, the app runs in guest-only mode and shows a clear "Cloud sync is off" notice in Settings.
 - AI Studio's Secrets panel is documented as **server-side only**; do not rely on it for browser code.
-- The `service_role` key and any other secret never enter the repo. Before every commit run a search for `service_role` and `eyJ` in tracked files and paste the (empty) result.
+- **Keys (checked against current Supabase docs, 2026-11-14):** use the **publishable key** (`sb_publishable_...`, browser-safe) and the **secret key** (`sb_secret_...`, never in the repo or in browser code). The legacy `anon` and `service_role` keys are being replaced (the docs say they keep working until the end of 2026); this project does not use them. Source: https://supabase.com/docs/guides/getting-started/migrating-to-new-api-keys and https://supabase.com/docs/guides/getting-started/api-keys. Edge Functions receive `SUPABASE_PUBLISHABLE_KEYS` and `SUPABASE_SECRET_KEYS` (plural) as environment variables; the platform `verify_jwt` check only understands legacy keys, so the card that writes a function must read the migration page above and follow it.
+- **Before any Supabase work** the AI reads the current docs page for that topic (R13), cites the URL, and uses only names shown there. If it cannot open it, the user pastes the page.
+- The secret key, the legacy `service_role` key and any other secret never enter the repo. Before every commit run a search for `service_role`, `sb_secret_` and `eyJ` in tracked files and paste the (empty) result.
 
 ## 10. Out of scope (do not build, do not suggest mid-card)
 

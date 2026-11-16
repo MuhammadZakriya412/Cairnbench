@@ -14,7 +14,7 @@
 | 0.3a | Form components | `done-PASS` | `src/ui/copy.ts`, `src/ui/Button/*`, `src/ui/InputField/*`, `src/ui/TextAreaField/*`, `src/ui/SelectField/*`, `src/ui/Switch/*`, `src/ui/Checkbox/*`, `e2e/kit-axe.spec.ts` |
 | 0.3b | Overlay and feedback components | `done-PASS` | `src/ui/InfoPopover/*`, `src/ui/ModalDrawer/*`, `src/ui/Tabs/*`, `src/ui/Badge/*`, `src/ui/Toast/*`, `src/ui/Skeleton/*`, `src/ui/EmptyState/*`, `src/ui/ErrorState/*`, `src/ui/CopyButton/*`, `src/ui/Kbd/*`, `e2e/kit-axe.spec.ts` |
 | 0.3c | Layout components | `done-PASS` | `src/ui/SplitPane/*`, `src/ui/ToolRow/*`, `src/ui/FeatureRow/*`, `src/ui/DiffView/*`, `src/ui/SiteHeader/*`, `src/ui/SiteFooter/*`, `src/ui/TrustStrip/*`, `e2e/kit-axe.spec.ts` |
-| 0.4 | Application shell and routing | `todo` | — |
+| 0.4 | Application shell and routing | `done-PASS` | `src/ui/Logo/*`, `src/apps/registry.ts`, `src/apps/registry.test.tsx`, `src/shell/*`, `src/pages/*`, `e2e/shell-routes.spec.ts`, `test-results/card-0.4-home-375.png`, `test-results/card-0.4-home-1280.png` |
 | 0.5 | Quality gates | `todo` | — |
 | 1.1 | Core interfaces and fixtures | `todo` | — |
 | 1.2 | Guest store | `todo` | — |
@@ -73,6 +73,7 @@
 | 0.3a | Sync the project to GitHub from AI Studio (`card 0.3a: build form components, copy deck, and axe tests`) and confirm CI is green | `pending` |
 | 0.3b | Sync the project to GitHub from AI Studio (`card 0.3b: build overlay and feedback components and axe tests`) and confirm CI is green | `pending` |
 | 0.3c | Sync the project to GitHub from AI Studio (`card 0.3c: build layout components and axe tests`) and confirm CI is green | `pending` |
+| 0.4 | Sync the project to GitHub from AI Studio (`card 0.4: build application shell, routing, command palette, and app registry`) and confirm CI is green | `pending` |
 
 ## 3. Environment Probe Summary
 

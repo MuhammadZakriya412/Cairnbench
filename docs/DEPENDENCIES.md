@@ -33,6 +33,7 @@ Recorded from `package.json`, `node_modules/*/package.json`, and `npm view` outp
 | `@radix-ui/react-dialog` | `dependencies` | `^1.3.1` | `1.3.1` | `1.3.1` | Card 0.3b | Active (`01 §4`); peer `react: ^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc`, `react-dom: ^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc` |
 | `react-resizable-panels` | `dependencies` | `^4.22.1` | `4.22.1` | `4.22.1` | Card 0.3c | Active (`01 §4`); peer `react: ^18.0.0 \|\| ^19.0.0`, `react-dom: ^18.0.0 \|\| ^19.0.0`, `@types/react: ^18.2.6 \|\| ^19.0.0` (optional) |
 | `diff` | `dependencies` | `^9.0.0` | `9.0.0` | `9.0.0` | Card 0.3c | Active (`01 §4`); ships bundled ESM/CJS `.d.ts` types |
+| `react-router-dom` | `dependencies` | `^7.18.5` | `7.18.5` | `7.18.5` | Card 0.4 | Active (`01 §4`); peer `react: >=18`, `react-dom: >=18` |
 | `typescript` | `devDependencies` | `~6.0.3` | `6.0.3` | `7.0.2` | scaffold / Card 0.1 | Active (`01 §4`); pinned from `^7.0.2` to `~6.0.3` because `typescript-eslint@8.72.2` requires `peer typescript@">=4.8.4 <6.1.0"` |
 | `tailwindcss` | `devDependencies` | `^4.3.3` | `4.3.5` | `4.3.5` | scaffold | Active (`01 §4`) |
 | `@types/node` | `devDependencies` | `^22.14.0` | `22.20.5` | `26.6.6` | scaffold | Active; matches container Node `v22.23.2` and `vitest@5.1.0` peer `@types/node: ^22.0.0 \|\| >=24.0.0` |
@@ -50,7 +51,6 @@ Recorded from `package.json`, `node_modules/*/package.json`, and `npm view` outp
 
 | Package | Reference Version (`01 §4`) | Latest on npm | Peer Dependencies on npm | Compatibility Notes |
 |---|---|---|---|---|
-| `react-router-dom` | `7.18.5` | `7.18.5` | `react: >=18`, `react-dom: >=18` | Compatible with `react@19.3.1` |
 | `@tanstack/react-query` | `5.107.1` | `5.107.1` | `react: ^18 \|\| ^19` | Compatible with `react@19.3.1` |
 | `zustand` | `5.1.0` | `5.1.0` | `react: >=18.0.0`, `immer: >=9.0.6` (optional), `use-sync-external-store: >=1.2.0` (optional) | Compatible with `react@19.3.1` |
 | `cmdk` | `1.1.1` | `1.1.1` | `react: ^18 \|\| ^19 \|\| ^19.0.0-rc`, `react-dom: ^18 \|\| ^19 \|\| ^19.0.0-rc` | Compatible with `react@19.3.1` |
