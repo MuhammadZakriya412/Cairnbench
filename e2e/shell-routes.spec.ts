@@ -60,6 +60,10 @@ test.describe('Card 0.4 Application shell and routing', () => {
     await expect(page).toHaveURL('http://localhost:3000/app/context-packer/workspace');
     await expect(page.getByRole('heading', { level: 1, name: 'Context Packer' })).toBeVisible();
 
+    // Placeholder workspace action navigates to /apps (no dead button)
+    await page.getByRole('button', { name: 'Open the workbench' }).click();
+    await expect(page).toHaveURL('http://localhost:3000/apps');
+
     // Check remaining routes from 01 §7 (/app/:appId/overview, /?docs=x redirect, /join/:token, /share/:token, 404)
     await page.goto('http://localhost:3000/app/context-packer/overview');
     await expect(page.getByRole('heading', { level: 1, name: 'Context Packer' })).toBeVisible();
@@ -97,6 +101,7 @@ test.describe('Card 0.4 Application shell and routing', () => {
     await page.getByRole('button', { name: 'Theme' }).click();
     await page.getByRole('button', { name: 'Dusk (dark)' }).click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'cairn-dusk');
+    expect(await page.evaluate(() => document.body.hasAttribute('data-theme'))).toBe(false);
 
     const duskAxe = await new AxeBuilder({ page }).analyze();
     const duskSerious = duskAxe.violations.filter(
@@ -110,6 +115,7 @@ test.describe('Card 0.4 Application shell and routing', () => {
     await page.getByRole('button', { name: 'Theme' }).click();
     await page.getByRole('button', { name: 'Daylight (light)' }).click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'cairn-daylight');
+    expect(await page.evaluate(() => document.body.hasAttribute('data-theme'))).toBe(false);
 
     const daylightAxe = await new AxeBuilder({ page }).analyze();
     const daylightSerious = daylightAxe.violations.filter(
@@ -136,4 +142,61 @@ test.describe('Card 0.4 Application shell and routing', () => {
     await expect(page).toHaveURL('http://localhost:3000/vault');
     await expect(page.getByRole('heading', { level: 1, name: 'Vault' })).toBeVisible();
   });
+
+  test('0 serious or critical axe violations with the command palette open in both themes', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('http://localhost:3000/');
+
+    await page.getByRole('button', { name: 'Theme' }).click();
+    await page.getByRole('button', { name: 'Dusk (dark)' }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'cairn-dusk');
+
+    await page.keyboard.press('Control+k');
+    const paletteDialogDusk = page.getByRole('dialog', { name: 'Command palette' });
+    await expect(paletteDialogDusk).toBeVisible();
+    const duskBg = await paletteDialogDusk.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(duskBg).toBe('rgb(31, 28, 25)');
+    const duskPaletteAxe = await new AxeBuilder({ page }).analyze();
+    expect(
+      duskPaletteAxe.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical'),
+    ).toEqual([]);
+    await page.keyboard.press('Escape');
+
+    await page.getByRole('button', { name: 'Theme' }).click();
+    await page.getByRole('button', { name: 'Daylight (light)' }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'cairn-daylight');
+
+    await page.keyboard.press('Control+k');
+    const paletteDialogDaylight = page.getByRole('dialog', { name: 'Command palette' });
+    await expect(paletteDialogDaylight).toBeVisible();
+    const daylightBg = await paletteDialogDaylight.evaluate(
+      (el) => getComputedStyle(el).backgroundColor,
+    );
+    expect(daylightBg).toBe('rgb(248, 246, 241)');
+    const daylightPaletteAxe = await new AxeBuilder({ page }).analyze();
+    expect(
+      daylightPaletteAxe.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical'),
+    ).toEqual([]);
+  });
+
+  test('sets html[data-theme] before paint via /theme-init.js even when the app script is blocked', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem(
+        'cairnbench:appearance',
+        JSON.stringify({ theme: 'cairn-daylight', density: 'comfortable', motion: 'full' }),
+      );
+    });
+    await page.route('**/src/main.tsx*', (route) => route.abort());
+    await page.route('**/assets/index-*.js*', (route) => route.abort());
+
+    await page.goto('http://localhost:3000/');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'cairn-daylight');
+    await expect(page.locator('#root')).toBeEmpty();
+  });
 });
+
+

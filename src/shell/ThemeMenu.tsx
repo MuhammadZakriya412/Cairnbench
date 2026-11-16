@@ -1,11 +1,8 @@
 import { Check, CircleAlert, SunMoon } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  getDensity,
-  getMotion,
-  saveAppearance,
-  setTheme,
-  ThemePreferenceSchema,
+  readThemePreference,
+  updateThemePreference,
   type ThemePreference,
 } from '../design/theme';
 import { Button } from '../ui/Button';
@@ -22,8 +19,6 @@ export interface ThemeMenuProps {
   onRetry?: () => void;
 }
 
-const THEME_PREF_STORAGE_KEY = 'cairnbench:theme-preference';
-
 const THEME_OPTIONS: readonly { value: ThemePreference; label: string }[] = [
   { value: 'system', label: 'System' },
   { value: 'cairn-dusk', label: 'Dusk (dark)' },
@@ -35,9 +30,7 @@ function readInitialPreference(): ThemePreference {
     return 'system';
   }
   try {
-    const raw = window.localStorage.getItem(THEME_PREF_STORAGE_KEY);
-    const parsed = ThemePreferenceSchema.safeParse(raw);
-    return parsed.success ? parsed.data : 'system';
+    return readThemePreference(window.localStorage);
   } catch {
     return 'system';
   }
@@ -61,6 +54,7 @@ export function ThemeMenu({
     if (!open) {
       return undefined;
     }
+    setPreference(readInitialPreference());
     const handlePointerDown = (event: MouseEvent) => {
       if (containerRef.current && event.target instanceof Node && !containerRef.current.contains(event.target)) {
         setOpen(false);
@@ -133,19 +127,8 @@ export function ThemeMenu({
   const handleSelectPreference = (nextPref: ThemePreference) => {
     setPreference(nextPref);
     if (typeof document !== 'undefined') {
-      const root = document.documentElement;
-      const resolvedTheme = setTheme(root, nextPref);
-      document.body.setAttribute('data-theme', resolvedTheme);
-      try {
-        window.localStorage.setItem(THEME_PREF_STORAGE_KEY, nextPref);
-        saveAppearance(window.localStorage, {
-          theme: resolvedTheme,
-          density: getDensity(root),
-          motion: getMotion(root),
-        });
-      } catch {
-        // Storage may be restricted in private browsing contexts
-      }
+      const storage = typeof window !== 'undefined' ? window.localStorage : null;
+      updateThemePreference(document.documentElement, storage, nextPref);
     }
     setOpen(false);
   };

@@ -31,40 +31,30 @@ export interface AppearanceStorage {
   setItem(key: string, value: string): void;
 }
 
-export type MatchMediaFn = (query: string) => { readonly matches: boolean };
+export interface MediaQueryResult {
+  readonly matches: boolean;
+  addEventListener?: (type: 'change', listener: () => void) => void;
+  removeEventListener?: (type: 'change', listener: () => void) => void;
+}
+
+export type MatchMediaFn = (query: string) => MediaQueryResult;
 
 export interface ThemeEnvironmentOptions {
   matchMedia?: MatchMediaFn;
 }
 
-export const APPEARANCE_STORAGE_KEY = 'cairnbench:appearance';
-
-const StoredAppearanceRecordSchema = z
-  .object({
-    theme: z.unknown().optional(),
-    density: z.unknown().optional(),
-    motion: z.unknown().optional(),
-  })
-  .passthrough();
-
-export function createAttributeTarget(
-  initial: Record<string, string> = {},
-): AttributeTarget {
+export function createAttributeTarget(initial: Record<string, string> = {}): AttributeTarget {
   const attrs = new Map<string, string>(Object.entries(initial));
   return {
-    getAttribute(name: string): string | null {
-      return attrs.get(name) ?? null;
-    },
-    setAttribute(name: string, value: string): void {
+    getAttribute: (name: string): string | null => attrs.get(name) ?? null,
+    setAttribute: (name: string, value: string): void => {
       attrs.set(name, value);
     },
   };
 }
 
 function getDefaultMatchMedia(options?: ThemeEnvironmentOptions): MatchMediaFn | undefined {
-  if (options?.matchMedia) {
-    return options.matchMedia;
-  }
+  if (options?.matchMedia) return options.matchMedia;
   if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
     return (query: string) => window.matchMedia(query);
   }
@@ -73,24 +63,34 @@ function getDefaultMatchMedia(options?: ThemeEnvironmentOptions): MatchMediaFn |
 
 export function resolveDefaultTheme(matchMediaFn?: MatchMediaFn): ThemeId {
   const matcher = getDefaultMatchMedia(matchMediaFn ? { matchMedia: matchMediaFn } : undefined);
-  if (matcher && matcher('(prefers-color-scheme: light)').matches) {
-    return 'cairn-daylight';
-  }
-  return 'cairn-dusk';
+  return matcher && matcher('(prefers-color-scheme: light)').matches ? 'cairn-daylight' : 'cairn-dusk';
 }
 
 export function resolveDefaultMotion(matchMediaFn?: MatchMediaFn): MotionPreference {
   const matcher = getDefaultMatchMedia(matchMediaFn ? { matchMedia: matchMediaFn } : undefined);
-  if (matcher && matcher('(prefers-reduced-motion: reduce)').matches) {
-    return 'reduced';
-  }
-  return 'full';
+  return matcher && matcher('(prefers-reduced-motion: reduce)').matches ? 'reduced' : 'full';
 }
 
-export function getTheme(
+function setValidatedAttr<T extends string>(
   root: AttributeTarget,
-  options?: ThemeEnvironmentOptions,
-): ThemeId {
+  attr: string,
+  schema: z.ZodType<T>,
+  value: unknown,
+  fallback: () => T,
+): T {
+  const parsed = schema.safeParse(value);
+  if (parsed.success) {
+    root.setAttribute(attr, parsed.data);
+    return parsed.data;
+  }
+  const current = schema.safeParse(root.getAttribute(attr));
+  if (current.success) return current.data;
+  const resolved = fallback();
+  root.setAttribute(attr, resolved);
+  return resolved;
+}
+
+export function getTheme(root: AttributeTarget, options?: ThemeEnvironmentOptions): ThemeId {
   const parsed = ThemeIdSchema.safeParse(root.getAttribute('data-theme'));
   return parsed.success ? parsed.data : resolveDefaultTheme(getDefaultMatchMedia(options));
 }
@@ -109,13 +109,9 @@ export function setTheme(
     root.setAttribute('data-theme', resolved);
     return resolved;
   }
-  const currentAttr = ThemeIdSchema.safeParse(root.getAttribute('data-theme'));
-  if (currentAttr.success) {
-    return currentAttr.data;
-  }
-  const fallback = resolveDefaultTheme(getDefaultMatchMedia(options));
-  root.setAttribute('data-theme', fallback);
-  return fallback;
+  return setValidatedAttr(root, 'data-theme', ThemeIdSchema, undefined, () =>
+    resolveDefaultTheme(getDefaultMatchMedia(options)),
+  );
 }
 
 export function getDensity(root: AttributeTarget): Density {
@@ -124,23 +120,10 @@ export function getDensity(root: AttributeTarget): Density {
 }
 
 export function setDensity(root: AttributeTarget, value: unknown): Density {
-  const parsed = DensitySchema.safeParse(value);
-  if (parsed.success) {
-    root.setAttribute('data-density', parsed.data);
-    return parsed.data;
-  }
-  const currentAttr = DensitySchema.safeParse(root.getAttribute('data-density'));
-  if (currentAttr.success) {
-    return currentAttr.data;
-  }
-  root.setAttribute('data-density', 'comfortable');
-  return 'comfortable';
+  return setValidatedAttr(root, 'data-density', DensitySchema, value, () => 'comfortable');
 }
 
-export function getMotion(
-  root: AttributeTarget,
-  options?: ThemeEnvironmentOptions,
-): MotionPreference {
+export function getMotion(root: AttributeTarget, options?: ThemeEnvironmentOptions): MotionPreference {
   const parsed = MotionPreferenceSchema.safeParse(root.getAttribute('data-motion'));
   return parsed.success ? parsed.data : resolveDefaultMotion(getDefaultMatchMedia(options));
 }
@@ -150,18 +133,9 @@ export function setMotion(
   value: unknown,
   options?: ThemeEnvironmentOptions,
 ): MotionPreference {
-  const parsed = MotionPreferenceSchema.safeParse(value);
-  if (parsed.success) {
-    root.setAttribute('data-motion', parsed.data);
-    return parsed.data;
-  }
-  const currentAttr = MotionPreferenceSchema.safeParse(root.getAttribute('data-motion'));
-  if (currentAttr.success) {
-    return currentAttr.data;
-  }
-  const fallback = resolveDefaultMotion(getDefaultMatchMedia(options));
-  root.setAttribute('data-motion', fallback);
-  return fallback;
+  return setValidatedAttr(root, 'data-motion', MotionPreferenceSchema, value, () =>
+    resolveDefaultMotion(getDefaultMatchMedia(options)),
+  );
 }
 
 export function applyAppearance(
@@ -176,44 +150,12 @@ export function applyAppearance(
   };
 }
 
-export function saveAppearance(
-  storage: AppearanceStorage,
-  settings: AppearanceSettings,
-): void {
-  const validated = {
-    theme: ThemeIdSchema.parse(settings.theme),
-    density: DensitySchema.parse(settings.density),
-    motion: MotionPreferenceSchema.parse(settings.motion),
-  };
-  storage.setItem(APPEARANCE_STORAGE_KEY, JSON.stringify(validated));
-}
-
-export function restoreAppearance(
-  root: AttributeTarget,
-  storage?: AppearanceStorage | null,
-  options?: ThemeEnvironmentOptions,
-): AppearanceSettings {
-  const rawJson = storage?.getItem(APPEARANCE_STORAGE_KEY);
-  if (!rawJson) {
-    return applyAppearance(root, {}, options);
-  }
-  let parsedJson: unknown;
-  try {
-    parsedJson = JSON.parse(rawJson);
-  } catch {
-    return applyAppearance(root, {}, options);
-  }
-  const recordResult = StoredAppearanceRecordSchema.safeParse(parsedJson);
-  if (!recordResult.success) {
-    return applyAppearance(root, {}, options);
-  }
-  return applyAppearance(
-    root,
-    {
-      theme: recordResult.data.theme,
-      density: recordResult.data.density,
-      motion: recordResult.data.motion,
-    },
-    options,
-  );
-}
+export {
+  APPEARANCE_STORAGE_KEY,
+  readThemePreference,
+  restoreAppearance,
+  saveAppearance,
+  stopAppearanceListener,
+  updateThemePreference,
+  type StoredAppearanceSettings,
+} from './themeStorage';

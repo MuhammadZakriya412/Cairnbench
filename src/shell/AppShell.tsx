@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { Navigate, Outlet, useSearchParams } from 'react-router-dom';
-import { restoreAppearance } from '../design/theme';
+import { restoreAppearance, stopAppearanceListener } from '../design/theme';
 import { ErrorState } from '../ui/ErrorState';
 import { Skeleton } from '../ui/Skeleton';
 import { TopNav } from './TopNav';
@@ -41,26 +41,15 @@ export function AppShell({
   const [paletteOpen, setPaletteOpen] = useState(initialPaletteOpen);
 
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      const storage = typeof window !== 'undefined' ? window.localStorage : null;
-      const settings = restoreAppearance(document.documentElement, storage);
-      document.body.setAttribute('data-theme', settings.theme);
-      document.body.setAttribute('data-density', settings.density);
-      document.body.setAttribute('data-motion', settings.motion);
-
-      const observer = new MutationObserver(() => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        if (currentTheme) {
-          document.body.setAttribute('data-theme', currentTheme);
-        }
-      });
-      observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['data-theme'],
-      });
-      return () => observer.disconnect();
+    if (typeof document === 'undefined') {
+      return undefined;
     }
-    return undefined;
+    const root = document.documentElement;
+    const storage = typeof window !== 'undefined' ? window.localStorage : null;
+    restoreAppearance(root, storage);
+    return () => {
+      stopAppearanceListener(root);
+    };
   }, []);
 
   useEffect(() => {

@@ -57,6 +57,23 @@ Order matters: do cards in ID order unless STATE.md says otherwise. Each card li
 - **Do not:** add a footer/status bar; add a fifth top-level destination.
 - **Checks:** Playwright test navigates every route by keyboard; ⌘K/Ctrl+K opens and Esc closes; axe in both themes on `/`; screenshot at 375 px and 1280 px saved to the test-results folder (paths listed).
 
+### Card 0.4b — Shell cleanup (scaffold leftovers found in review of 0.4)
+- **Read first:** 03 §3–4, 01 §9 and §12, `docs/BACKLOG.md`.
+- **Files:** `index.html`, `public/theme-init.js` (new), `src/index.css`, `src/shell/AppShell.tsx`, `src/shell/ThemeMenu.tsx`, `src/design/theme.ts` and its test, `src/apps/*/PlaceholderWorkspace.tsx` (all four), `src/config/public.ts`, `.env.example`, `public/assets/aistudio/*` (delete, see user actions), `docs/BACKLOG.md`, `docs/STATE.md`.
+- **Steps (tests first where there is logic):**
+  1. `index.html`: title and description use the product name and the hero copy from the copy deck (no invented claims); remove the Google Fonts links (fonts are self-hosted through `@fontsource`); remove `class="dark"` and the zinc/indigo body classes; load `/theme-init.js` (a small external script, so the CSP in Card 0.5 can stay `'self'`) that sets `data-theme` on `<html>` before first paint, from the stored preference or `prefers-color-scheme`, accepting only the two theme ids.
+  2. `src/index.css`: delete the four scaffold theme blocks (`carbon-studio`, `alabaster-paper`, `cobalt-slate`, `warm-atelier`) and every hard-coded font or color; keep `@import "tailwindcss"`, a `body` rule that uses tokens, and the mono rule.
+  3. `AppShell`: remove the `body[data-theme]` copy and the `MutationObserver`. They exist to beat the scaffold `:root` rules from step 2. Prove with tests that content rendered in a Radix portal (ModalDrawer, InfoPopover) still takes the right theme in both themes.
+  4. System preference: keep **one** storage key holding the preference (`system`, `cairn-dusk` or `cairn-daylight`). `restoreAppearance` honours `system` and follows OS changes through a `matchMedia` change listener. Today `ThemeMenu` writes a second key and the restored theme is the already-resolved one, so "System" stops following the OS. Write the failing test first.
+  5. The four placeholder workspaces must not show a button that does nothing (R4): give each a real action (open `/apps`) or no action.
+  6. `src/config/public.ts`: rename `SUPABASE_ANON_KEY` to `SUPABASE_PUBLISHABLE_KEY` (R13: cite the Supabase docs URL you checked). Search for other uses and report them.
+  7. `.env.example`: no real URL or key. Remove the Gemini and `APP_URL` lines (the app does not call Gemini). Keep a one-line comment that public config lives in `src/config/public.ts`.
+  8. `docs/BACKLOG.md`, one line each: command palette uses `listbox` with `button` children (use the combobox pattern); `registerAppForTest` lives in the production registry module; the registry test id regex allows a leading digit but the database check does not; header shows "Ctrl+K" on every platform; `playwright.config.ts` has no `webServer` and the e2e files hard-code `http://localhost:3000` (fix in 0.5); shell parts copy the five-state blocks (decide in a later card which components really need them).
+  9. `docs/STATE.md`: mark user actions that are done; keep the table honest.
+- **Do not:** touch `src/ui/*`, add packages, change routes, start Card 0.5 work.
+- **Checks (paste output):** red then green for step 3 and step 4 tests; `npm run build` (show JS gzip size before and after); axe in both themes on `/` **and with the command palette open**; a Playwright test that blocks the app script and still sees `html[data-theme]` set; `npm ci --dry-run` only if `package.json` changed; search for `anon`, `sb_secret_` and `service_role` in tracked files (paste the result).
+- **User actions:** open `public/assets/aistudio/Paste_November_14__2026_-_10_04AM_77214505` on GitHub, decide whether it is something you meant to publish, and tell Gemini to delete it (it is served publicly from the site); sync; confirm Actions is green.
+
 ### Card 0.5 — Quality gates
 - **Files:** `public/_headers` (CSP, `frame-ancestors 'none'`, referrer policy), CI additions, `docs/SECURITY_CHECKLIST.md` (from 02 §11), `package.json` script `sloplint`.
 - **Steps:** add Playwright + axe job to CI (install Chromium in the job); add a CI step that fails if `service_role` or `sb_secret_` appears in tracked files; add a CI step that fails if any app id string (e.g. `context-packer`) appears in `src/` outside `src/apps/` and `src/apps/registry.ts`; wire `sloplint` **only after the user has placed `scripts/sloplint.mjs`** (read its header/`--help`, quote supported options).

@@ -164,4 +164,69 @@ describe('theme attribute controller (03 §3–4, Card 0.2)', () => {
       motion: 'reduced',
     });
   });
+
+  it('stores system preference under the single appearance key and follows OS matchMedia changes', () => {
+    let isLight = false;
+    const listeners = new Set<() => void>();
+    const matchMedia = (query: string) => ({
+      get matches() {
+        return query === '(prefers-color-scheme: light)' ? isLight : false;
+      },
+      addEventListener(type: string, listener: () => void) {
+        if (type === 'change' && query === '(prefers-color-scheme: light)') {
+          listeners.add(listener);
+        }
+      },
+      removeEventListener(type: string, listener: () => void) {
+        if (type === 'change' && query === '(prefers-color-scheme: light)') {
+          listeners.delete(listener);
+        }
+      },
+    });
+
+    const storage = createMemoryStorage();
+    const root = createAttributeTarget();
+
+    saveAppearance(storage, {
+      theme: 'system',
+      density: 'comfortable',
+      motion: 'full',
+    });
+
+    const rawStored = storage.getItem('cairnbench:appearance');
+    expect(rawStored).not.toBeNull();
+    expect(JSON.parse(rawStored ?? '{}')).toMatchObject({ theme: 'system' });
+
+    const restored = restoreAppearance(root, storage, { matchMedia });
+    expect(restored.theme).toBe('cairn-dusk');
+    expect(root.getAttribute('data-theme')).toBe('cairn-dusk');
+
+    // OS switches to light -> root follows automatically
+    isLight = true;
+    for (const listener of listeners) {
+      listener();
+    }
+    expect(root.getAttribute('data-theme')).toBe('cairn-daylight');
+
+    // OS switches back to dark -> root follows automatically
+    isLight = false;
+    for (const listener of listeners) {
+      listener();
+    }
+    expect(root.getAttribute('data-theme')).toBe('cairn-dusk');
+
+    // User pins explicit cairn-daylight -> OS changes no longer override it
+    saveAppearance(storage, {
+      theme: 'cairn-daylight',
+      density: 'comfortable',
+      motion: 'full',
+    });
+    setTheme(root, 'cairn-daylight', { matchMedia });
+    isLight = false;
+    for (const listener of listeners) {
+      listener();
+    }
+    expect(root.getAttribute('data-theme')).toBe('cairn-daylight');
+  });
 });
+
